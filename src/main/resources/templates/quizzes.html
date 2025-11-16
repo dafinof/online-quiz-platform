@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Quizzes - QuizMaster</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .back-btn {
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .page-title {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .page-title h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .page-title p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .category-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .category-icon {
+            font-size: 3em;
+        }
+
+        .category-title {
+            flex: 1;
+        }
+
+        .category-title h2 {
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .category-title p {
+            color: #666;
+            font-size: 1em;
+        }
+
+        .quiz-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .quiz-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quiz-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .quiz-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            border-color: #667eea;
+        }
+
+        .quiz-name {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .quiz-description {
+            color: #666;
+            font-size: 0.95em;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .quiz-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .difficulty {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85em;
+        }
+
+        .difficulty.easy {
+            background: #4caf50;
+            color: white;
+        }
+
+        .difficulty.medium {
+            background: #ff9800;
+            color: white;
+        }
+
+        .difficulty.hard {
+            background: #f44336;
+            color: white;
+        }
+
+        .quiz-stats {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .start-quiz-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .start-quiz-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .page-title h1 {
+                font-size: 2em;
+            }
+
+            .category-section {
+                padding: 25px;
+            }
+
+            .category-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .category-title h2 {
+                font-size: 1.5em;
+            }
+
+            .quiz-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">🎯 QuizMaster</div>
+        <a href="/home" class="back-btn">Back to Home</a>
+    </div>
+
+    <!-- Page Title -->
+    <div class="page-title">
+        <h1>Browse Quizzes</h1>
+        <p>Choose from our collection of quizzes across different categories</p>
+    </div>
+
+    <!-- Geography Category -->
+    <div class="category-section">
+        <div class="category-header">
+            <div class="category-icon">🌍</div>
+            <div class="category-title">
+                <h2>Geography</h2>
+                <p>Test your knowledge of countries, capitals, and landmarks</p>
+            </div>
+        </div>
+        <div class="quiz-grid">
+            <div class="quiz-card" th:each="quiz : ${quizzesGeography}">
+                <div class="quiz-name" th:text="${quiz.name}">World Capitals</div>
+                <div class="quiz-description" th:text="${quiz.description}">Can you name the capitals of countries around the world?</div>
+                <div class="quiz-meta">
+                    <span th:if="${quiz.questions.size() < 4}" class="difficulty easy">Easy</span>
+                    <span th:if="${quiz.questions.size() > 3 and quiz.questions.size() < 8}" class="difficulty medium">Medium</span>
+                    <span th:if="${quiz.questions.size() > 7}" class="difficulty hard">Hard</span>
+                    <span th:text="'⏱️ ' + ${#numbers.formatInteger(quiz.questions.size() * 1.5, 2)} + ' min'">⏱️ 10 min</span>
+                </div>
+                <div class="quiz-stats">
+                    <div class="stat-item">
+                        <span>📝</span>
+                        <span th:text="${quiz.questions.size()} + ' questions'">20 questions</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>🎯</span>
+                        <span th:text="${quiz.score} + ' score'">score</span>
+                    </div>
+                </div>
+                <a th:href="@{/quiz/{id}(id=${quiz.id})}" class="start-quiz-btn">Start Quiz</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Category -->
+    <div class="category-section">
+        <div class="category-header">
+            <div class="category-icon">📜</div>
+            <div class="category-title">
+                <h2>History</h2>
+                <p>Journey through time with historical events and figures</p>
+            </div>
+        </div>
+        <div class="quiz-grid">
+            <div class="quiz-card" th:each="quiz : ${quizzesHistory}">
+                <div class="quiz-name" th:text="${quiz.name}">World Capitals</div>
+                <div class="quiz-description" th:text="${quiz.description}">Can you name the capitals of countries around the world?</div>
+                <div class="quiz-meta">
+                    <span th:if="${quiz.questions.size() < 4}" class="difficulty easy">Easy</span>
+                    <span th:if="${quiz.questions.size() > 3 and quiz.questions.size() < 8}" class="difficulty medium">Medium</span>
+                    <span th:if="${quiz.questions.size() > 7}" class="difficulty hard">Hard</span>
+                    <span th:text="'⏱️ ' + ${#numbers.formatInteger(quiz.questions.size() * 1.5, 2)} + ' min'">⏱️ 10 min</span>
+                </div>
+                <div class="quiz-stats">
+                    <div class="stat-item">
+                        <span>📝</span>
+                        <span th:text="${quiz.questions.size()} + ' questions'">20 questions</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>🎯</span>
+                        <span th:text="${quiz.score} + ' score'">score</span>
+                    </div>
+                </div>
+                <a th:href="@{/quiz/{id}(id=${quiz.id})}" class="start-quiz-btn">Start Quiz</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Music Category -->
+    <div class="category-section">
+        <div class="category-header">
+            <div class="category-icon">🎵</div>
+            <div class="category-title">
+                <h2>Music</h2>
+                <p>From classical to contemporary, test your musical knowledge</p>
+            </div>
+        </div>
+        <div class="quiz-grid">
+            <div class="quiz-card" th:each="quiz : ${quizzesMusic}">
+                <div class="quiz-name" th:text="${quiz.name}">World Capitals</div>
+                <div class="quiz-description" th:text="${quiz.description}">Can you name the capitals of countries around the world?</div>
+                <div class="quiz-meta">
+                    <span th:if="${quiz.questions.size() < 4}" class="difficulty easy">Easy</span>
+                    <span th:if="${quiz.questions.size() > 3 and quiz.questions.size() < 8}" class="difficulty medium">Medium</span>
+                    <span th:if="${quiz.questions.size() > 7}" class="difficulty hard">Hard</span>
+                    <span th:text="'⏱️ ' + ${#numbers.formatInteger(quiz.questions.size() * 1.5, 2)} + ' min'">⏱️ 10 min</span>
+                </div>
+                <div class="quiz-stats">
+                    <div class="stat-item">
+                        <span>📝</span>
+                        <span th:text="${quiz.questions.size()} + ' questions'">20 questions</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>🎯</span>
+                        <span th:text="${quiz.score} + ' score'">score</span>
+                    </div>
+                </div>
+                <a th:href="@{/quiz/{id}(id=${quiz.id})}" class="start-quiz-btn">Start Quiz</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

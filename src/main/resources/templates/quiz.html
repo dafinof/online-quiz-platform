@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Take Quiz - QuizMaster</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            flex: 1;
+        }
+
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .quiz-title {
+            flex: 1;
+        }
+
+        .quiz-title h2 {
+            color: #333;
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+
+        .quiz-title p {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .progress-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .progress-info {
+            text-align: right;
+            min-width: 100px;
+        }
+
+        .progress-info p {
+            color: #667eea;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .progress-bar {
+            width: 150px;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .quiz-content {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 50px 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .question-counter {
+            color: #667eea;
+            font-size: 0.95em;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 1.4em;
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .option input[type="radio"] {
+            display: none;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background: #f5f7fa;
+            border: 2px solid transparent;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .option input[type="radio"]:checked + .option-label {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .option-label:hover {
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .radio-circle {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #667eea;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .option input[type="radio"]:checked + .option-label .radio-circle {
+            background: white;
+            border-color: white;
+        }
+
+        .option input[type="radio"]:checked + .option-label .radio-circle::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #667eea;
+            border-radius: 50%;
+        }
+
+        .option-text {
+            flex: 1;
+            font-size: 1.05em;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 20px;
+            justify-content: space-between;
+            margin-top: 40px;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.05em;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            color: white;
+            flex: 1;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .exit-btn {
+            background: #f44336;
+            color: white;
+            padding: 12px 30px;
+            font-size: 0.95em;
+        }
+
+        .exit-btn:hover {
+            background: #da190b;
+            transform: translateY(-2px);
+        }
+
+        .timer {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #ff9800 0%, #e68900 100%);
+            color: white;
+            border-radius: 25px;
+            font-weight: 600;
+        }
+
+        .timer.warning {
+            background: linear-gradient(135deg, #f44336 0%, #da190b 100%);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .header-left {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .progress-section {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .progress-info {
+                text-align: center;
+            }
+
+            .quiz-title h2 {
+                font-size: 1.2em;
+            }
+
+            .question-text {
+                font-size: 1.2em;
+            }
+
+            .button-container {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .quiz-content {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="header-left">
+            <div class="logo">🎯 QuizMaster</div>
+            <div class="quiz-title">
+                <h2 th:text="${quiz.name}">World Capitals</h2>
+                <p th:text="${quiz.description}">Test your knowledge of world capitals</p>
+            </div>
+        </div>
+        <div class="progress-section">
+            <div class="timer" id="timer">
+                <span>⏱️</span>
+                <span id="timerText">10:00</span>
+            </div>
+            <div class="progress-info">
+                <p id="questionCounter">1 / 10</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="quiz-content">
+        <form id="quizForm" th:method="post" th:action="@{/quiz/submit}" th:object="${quiz}">
+            <input type="hidden" th:field="*{id}">
+            <input type="hidden" th:field="*{name}">
+            <input type="hidden" th:field="*{imageUrl}">
+            <input type="hidden" th:field="*{category}">
+            <input type="hidden" th:field="*{description}">
+
+            <div id="questionsContainer">
+                <div th:each="question, qStat : *{questions}"
+                     class="question-section"
+                     th:attr="data-question-index=${qStat.index}"
+                     style="display: none;">
+
+                    <div class="question-counter"
+                         th:text="'Question ' + ${qStat.count} + ' of ' + *{questions.size()}"></div>
+
+                    <div class="question-text" th:text="${question.name}"></div>
+
+                    <input type="hidden"
+                           th:name="'questions[' + ${qStat.index} + '].id'"
+                           th:value="${question.id}">
+                    <input type="hidden"
+                           th:name="'questions[' + ${qStat.index} + '].name'"
+                           th:value="${question.name}">
+
+                    <div class="options">
+                        <div th:each="option, oStat : ${question.options}" class="option">
+
+                            <input type="hidden"
+                                   th:name="'questions[' + ${qStat.index} + '].options[' + ${oStat.index} + '].id'"
+                                   th:value="${option.id}">
+
+                            <input type="hidden"
+                                   th:name="'questions[' + ${qStat.index} + '].options[' + ${oStat.index} + '].text'"
+                                   th:value="${option.text}">
+
+                            <input type="hidden"
+                                   th:name="'questions[' + ${qStat.index} + '].options[' + ${oStat.index} + '].isCorrect'"
+                                   th:value="${option.isCorrect}">
+
+                            <input type="radio"
+                                   th:id="'q' + ${qStat.index} + '_opt' + ${oStat.index}"
+                                   name="radio_group_q[[${qStat.index}]]"
+                                   class="question-input"
+                                   th:attr="onclick='selectOnlyOne(' + ${qStat.index} + ',' + ${oStat.index} + ')'"
+                            >
+
+                            <label th:for="'q' + ${qStat.index} + '_opt' + ${oStat.index}" class="option-label">
+                                <div class="radio-circle"></div>
+                                <div class="option-text" th:text="${option.text}"></div>
+                            </label>
+
+                            <input type="hidden"
+                                   th:id="'is_selected_q' + ${qStat.index} + '_opt' + ${oStat.index}"
+                                   th:name="'questions[' + ${qStat.index} + '].options[' + ${oStat.index} + '].isSelected'"
+                                   value="false">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-container">
+                <button type="button" class="btn btn-prev" id="prevBtn" onclick="previousQuestion()" disabled>← Previous</button>
+                <button type="button" class="btn btn-next" id="nextBtn" onclick="nextQuestion()">Next →</button>
+                <button type="button" class="btn btn-submit" id="submitBtn" onclick="submitQuizForm();" style="display: none;">Submit Quiz</button>
+                <button type="button" class="btn exit-btn" onclick="exitQuiz()">Exit</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<script>
+    let currentQuestion = 0;
+    let totalQuestions = 0;
+
+    function init() {
+        totalQuestions = document.querySelectorAll('.question-section').length;
+        showQuestion(0);
+    }
+
+    function showQuestion(index) {
+        const sections = document.querySelectorAll('.question-section');
+        sections.forEach(q => q.style.display = 'none');
+        sections[index].style.display = 'block';
+
+        document.getElementById('prevBtn').disabled = index === 0;
+        updateButtonsForLastQuestion();
+        window.scrollTo(0, 0);
+    }
+
+    function nextQuestion() {
+        if (currentQuestion < totalQuestions - 1) {
+            currentQuestion++;
+            showQuestion(currentQuestion);
+        }
+    }
+
+    function previousQuestion() {
+        if (currentQuestion > 0) {
+            currentQuestion--;
+            showQuestion(currentQuestion);
+        }
+    }
+
+    function updateButtonsForLastQuestion() {
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        if (currentQuestion === totalQuestions - 1) {
+            nextBtn.style.display = 'none';
+            submitBtn.style.display = 'inline-block';
+        } else {
+            nextBtn.style.display = 'inline-block';
+            submitBtn.style.display = 'none';
+        }
+    }
+
+    // This function should now be correctly recognized and executed
+    function selectOnlyOne(questionIndex, selectedOptionIndex) {
+        // 1. Get the container for the current question
+        const questionSection = document.querySelector(`.question-section[data-question-index="${questionIndex}"]`);
+
+        if (!questionSection) return;
+
+        // 2. Find ALL hidden 'isSelected' fields for this question and reset them to 'false'
+        const allIsSelectedFields = questionSection.querySelectorAll('input[type="hidden"][name$=".isSelected"]');
+        allIsSelectedFields.forEach(field => {
+            field.value = 'false';
+        });
+
+        // 3. Find the hidden 'isSelected' field for the selected option and set it to 'on'
+        const selectedFieldId = 'is_selected_q' + questionIndex + '_opt' + selectedOptionIndex;
+        const selectedField = document.getElementById(selectedFieldId);
+
+        if (selectedField) {
+            // Setting value to 'on' for Spring binder to recognize 'true'
+            selectedField.value = 'on';
+        }
+    }
+
+    function submitQuizForm() {
+        document.getElementById('quizForm').submit();
+    }
+
+    function exitQuiz() {
+        if (confirm('Are you sure you want to exit? Your progress will be lost.')) {
+            window.location.href = '/quizzes';
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowRight') nextQuestion();
+        if (e.key === 'ArrowLeft') previousQuestion();
+    });
+</script>
+</body>
+</html>

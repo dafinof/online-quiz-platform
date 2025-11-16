@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Quiz - QuizMaster</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .back-btn {
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .page-title {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .page-title h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .page-title p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-section {
+            margin-bottom: 40px;
+        }
+
+        .form-section h2 {
+            color: #333;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 1em;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="url"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .question-card {
+            background: #f9f9f9;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .remove-question-btn {
+            padding: 8px 16px;
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .remove-question-btn:hover {
+            background: #d32f2f;
+            transform: scale(1.05);
+        }
+
+        .option-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .option-group input[type="text"] {
+            flex: 1;
+        }
+
+        .option-group input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        .option-group .checkbox-label {
+            font-weight: 500;
+            color: #666;
+            min-width: 80px;
+        }
+
+        .remove-option-btn {
+            padding: 8px 12px;
+            background: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .remove-option-btn:hover {
+            background: #f57c00;
+        }
+
+        .add-option-btn {
+            padding: 10px 20px;
+            background: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .add-option-btn:hover {
+            background: #45a049;
+            transform: scale(1.05);
+        }
+
+        .add-question-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .add-question-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .submit-btn {
+            flex: 1;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        .cancel-btn {
+            flex: 1;
+            padding: 18px;
+            background: #e0e0e0;
+            color: #333;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .cancel-btn:hover {
+            background: #d0d0d0;
+            transform: translateY(-2px);
+        }
+
+        .hint-text {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .page-title h1 {
+                font-size: 2em;
+            }
+
+            .form-container {
+                padding: 25px;
+            }
+
+            .option-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .question-header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="logo">🎯 QuizMaster</div>
+        <a href="/quizzes" class="back-btn">Back to Quizzes</a>
+    </div>
+
+    <div class="page-title">
+        <h1>Create New Quiz</h1>
+        <p>Design your own quiz and share it with the community</p>
+    </div>
+
+    <div class="form-container">
+        <form th:action="@{/new-quiz}" th:object="${newQuizRequest}" method="post" id="quizForm">
+
+            <div class="form-section">
+                <h2>📋 Quiz Information</h2>
+
+                <div class="form-group">
+                    <label for="quizName">Quiz Name *</label>
+                    <input type="text" id="quizName" th:field="*{name}" required placeholder="Enter quiz name">
+                    <p class="error-message" th:if="${#fields.hasErrors('name')}" th-errors="*{name}"></p>
+                </div>
+
+                <div class="form-group">
+                    <label for="imageUrl">Image URL</label>
+                    <input type="url" id="imageUrl" th:field="*{imageUrl}" placeholder="https://example.com/image.jpg">
+                    <p class="error-message" th:if="${#fields.hasErrors('imageUrl')}" th-errors="*{imageUrl}"></p>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Category *</label>
+                    <select id="category" th:field="*{category}" required>
+                        <option value="">Select a category</option>
+                        <option th:each="c : ${T(bg.softuni.onlinequizplatform.model.Category).values()}"
+                                th:value="${c}" th:text="${c.name()}"></option>
+                    </select>
+                    <p class="error-message" th:if="${#fields.hasErrors('category')}" th-errors="*{category}"></p>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>❓ Questions</h2>
+
+                <div id="questionsContainer">
+                    <div class="question-card" data-index="0">
+                        <div class="question-header">
+                            <span class="question-number">Question 1</span>
+                            <button type="button" class="remove-question-btn" onclick="removeQuestion(this)">Remove Question</button>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Question Text *</label>
+                            <textarea name="questions[0].name" required placeholder="Enter your question here" class="question-text"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Answer Options *</label>
+                            <div class="options-container">
+                                <div class="option-group" data-option-index="0">
+                                    <input type="text" name="questions[0].options[0].text" required placeholder="Option 1" class="option-text">
+
+                                    <input type="hidden" name="questions[0].options[0].isCorrect" value="false" class="hidden-correct-input">
+                                    <input type="checkbox" name="questions[0].options[0].isCorrect" value="true" class="option-correct">
+
+                                    <input type="hidden" name="questions[0].options[0].isSelected" value="false">
+
+                                    <label class="checkbox-label">Correct</label>
+                                    <button type="button" class="remove-option-btn" onclick="removeOption(this)">Remove</button>
+                                </div>
+                                <div class="option-group" data-option-index="1">
+                                    <input type="text" name="questions[0].options[1].text" required placeholder="Option 2" class="option-text">
+
+                                    <input type="hidden" name="questions[0].options[1].isCorrect" value="false" class="hidden-correct-input">
+                                    <input type="checkbox" name="questions[0].options[1].isCorrect" value="true" class="option-correct">
+
+                                    <input type="hidden" name="questions[0].options[1].isSelected" value="false">
+
+                                    <label class="checkbox-label">Correct</label>
+                                    <button type="button" class="remove-option-btn" onclick="removeOption(this)">Remove</button>
+                                </div>
+                            </div>
+                            <button type="button" class="add-option-btn" onclick="addOption(this)">+ Add Option</button>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="add-question-btn" id="addQuestionBtn">+ Add Another Question</button>
+            </div>
+
+            <div class="form-actions">
+                <a href="/quizzes" class="cancel-btn">Cancel</a>
+                <button type="submit" class="submit-btn">Create Quiz</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    let questionIndex = 1;
+
+    // New function to handle checkbox state
+    window.handleCheckboxChange = function(checkbox) {
+        // Find the corresponding hidden input (we added a class 'hidden-correct-input')
+        const optionGroup = checkbox.closest('.option-group');
+        const hiddenInput = optionGroup.querySelector('.hidden-correct-input');
+
+        if (hiddenInput) {
+            // If the checkbox is checked, DISABLE the hidden input.
+            // Only the 'true' from the checkbox will be sent.
+            hiddenInput.disabled = checkbox.checked;
+        }
+    };
+
+    // Initialize listeners for the static checkboxes
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.option-correct').forEach(checkbox => {
+            // Apply the change listener
+            checkbox.addEventListener('change', () => handleCheckboxChange(checkbox));
+            // Apply the initial state (in case of validation failure/pre-fill)
+            handleCheckboxChange(checkbox);
+        });
+    });
+
+    document.getElementById('addQuestionBtn').addEventListener('click', function() {
+        const container = document.getElementById('questionsContainer');
+
+        const questionCard = document.createElement('div');
+        questionCard.className = 'question-card';
+        questionCard.setAttribute('data-index', questionIndex);
+
+        const newQuestionHtml = `
+            <div class="question-header">
+                <span class="question-number">Question ${questionIndex + 1}</span>
+                <button type="button" class="remove-question-btn" onclick="removeQuestion(this)">Remove Question</button>
+            </div>
+
+            <div class="form-group">
+                <label>Question Text *</label>
+                <textarea name="questions[${questionIndex}].name" required placeholder="Enter your question here" class="question-text"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Answer Options *</label>
+                <div class="options-container">
+                    <div class="option-group" data-option-index="0">
+                        <input type="text" name="questions[${questionIndex}].options[0].text" required placeholder="Option 1" class="option-text">
+                        <input type="hidden" name="questions[${questionIndex}].options[0].isCorrect" value="false" class="hidden-correct-input">
+                        <input type="checkbox" name="questions[${questionIndex}].options[0].isCorrect" value="true" class="option-correct">
+                        <input type="hidden" name="questions[${questionIndex}].options[0].isSelected" value="false">
+                        <label class="checkbox-label">Correct</label>
+                        <button type="button" class="remove-option-btn" onclick="removeOption(this)">Remove</button>
+                    </div>
+                    <div class="option-group" data-option-index="1">
+                        <input type="text" name="questions[${questionIndex}].options[1].text" required placeholder="Option 2" class="option-text">
+                        <input type="hidden" name="questions[${questionIndex}].options[1].isCorrect" value="false" class="hidden-correct-input">
+                        <input type="checkbox" name="questions[${questionIndex}].options[1].isCorrect" value="true" class="option-correct">
+                        <input type="hidden" name="questions[${questionIndex}].options[1].isSelected" value="false">
+                        <label class="checkbox-label">Correct</label>
+                        <button type="button" class="remove-option-btn" onclick="removeOption(this)">Remove</button>
+                    </div>
+                </div>
+                <button type="button" class="add-option-btn" onclick="addOption(this)">+ Add Option</button>
+            </div>
+        `;
+
+        questionCard.innerHTML = newQuestionHtml;
+        container.appendChild(questionCard);
+
+        // ADD: Initialize event listeners for the new question's checkboxes
+        questionCard.querySelectorAll('.option-correct').forEach(checkbox => {
+            checkbox.addEventListener('change', () => handleCheckboxChange(checkbox));
+        });
+
+        questionIndex++;
+    });
+
+    window.addOption = function(button) {
+        const optionsContainer = button.previousElementSibling;
+        const questionCard = button.closest('.question-card');
+        const questionIdx = questionCard.getAttribute('data-index');
+        const optionIndex = optionsContainer.children.length;
+
+        const optionGroup = document.createElement('div');
+        optionGroup.className = 'option-group';
+        optionGroup.setAttribute('data-option-index', optionIndex);
+
+        optionGroup.innerHTML = `
+            <input type="text" name="questions[${questionIdx}].options[${optionIndex}].text" required placeholder="Option ${optionIndex + 1}" class="option-text">
+            <input type="hidden" name="questions[${questionIdx}].options[${optionIndex}].isCorrect" value="false" class="hidden-correct-input">
+            <input type="checkbox" name="questions[${questionIdx}].options[${optionIndex}].isCorrect" value="true" class="option-correct">
+            <input type="hidden" name="questions[${questionIdx}].options[${optionIndex}].isSelected" value="false">
+            <label class="checkbox-label">Correct</label>
+            <button type="button" class="remove-option-btn" onclick="removeOption(this)">Remove</button>
+        `;
+
+        optionsContainer.appendChild(optionGroup);
+
+        // ADD: Initialize event listener for the new option's checkbox
+        const newCheckbox = optionGroup.querySelector('.option-correct');
+        if (newCheckbox) {
+            newCheckbox.addEventListener('change', () => handleCheckboxChange(newCheckbox));
+        }
+    };
+
+    window.removeOption = function(button) {
+        const optionGroup = button.closest('.option-group');
+        const optionsContainer = optionGroup.parentElement;
+
+        if (optionsContainer.children.length <= 2) {
+            alert('A question must have at least 2 options');
+            return;
+        }
+
+        optionGroup.remove();
+        reindexOptions(optionsContainer);
+    };
+
+    window.removeQuestion = function(button) {
+        const questionCard = button.closest('.question-card');
+        const container = document.getElementById('questionsContainer');
+
+        if (container.children.length <= 1) {
+            alert('A quiz must have at least 1 question');
+            return;
+        }
+
+        questionCard.remove();
+        reindexQuestions();
+    };
+
+    function reindexQuestions() {
+        const container = document.getElementById('questionsContainer');
+        const questions = container.querySelectorAll('.question-card');
+
+        questions.forEach((card, index) => {
+            card.setAttribute('data-index', index);
+            card.querySelector('.question-number').textContent = `Question ${index + 1}`;
+
+            // Update question name field
+            const questionTextarea = card.querySelector('textarea');
+            if (questionTextarea) {
+                questionTextarea.name = `questions[${index}].name`;
+            }
+
+            // Update all option fields
+            const optionsContainer = card.querySelector('.options-container');
+            if (optionsContainer) {
+                reindexOptions(optionsContainer, index);
+            }
+        });
+
+        questionIndex = questions.length;
+    }
+
+    function reindexOptions(optionsContainer, questionIdx = null) {
+        if (questionIdx === null) {
+            const questionCard = optionsContainer.closest('.question-card');
+            questionIdx = questionCard.getAttribute('data-index');
+        }
+
+        const options = optionsContainer.querySelectorAll('.option-group');
+        options.forEach((option, optionIndex) => {
+            option.setAttribute('data-option-index', optionIndex);
+
+            const textInput = option.querySelector('input[type="text"]');
+
+            // Find inputs for isCorrect (using the new class)
+            const hiddenCorrect = option.querySelector('.hidden-correct-input');
+            const checkboxCorrect = option.querySelector('.option-correct');
+
+            // Find input for isSelected
+            const hiddenSelected = option.querySelector('input[name*="isSelected"]');
+
+
+            if (textInput) {
+                textInput.name = `questions[${questionIdx}].options[${optionIndex}].text`;
+                textInput.placeholder = `Option ${optionIndex + 1}`;
+            }
+
+            // Re-index isCorrect inputs
+            if (hiddenCorrect && checkboxCorrect) {
+                hiddenCorrect.name = `questions[${questionIdx}].options[${optionIndex}].isCorrect`;
+                checkboxCorrect.name = `questions[${questionIdx}].options[${optionIndex}].isCorrect`;
+            }
+
+            // Re-index isSelected input
+            if (hiddenSelected) {
+                hiddenSelected.name = `questions[${questionIdx}].options[${optionIndex}].isSelected`;
+            }
+
+            // Re-run the change handler to update the disabled state in case of re-indexing
+            if (checkboxCorrect) {
+                handleCheckboxChange(checkboxCorrect);
+            }
+        });
+    }
+</script>
+</body>
+</html>

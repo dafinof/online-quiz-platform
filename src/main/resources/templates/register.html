@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - QuizMaster</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .register-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 450px;
+            width: 100%;
+            overflow: hidden;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .register-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px;
+            text-align: center;
+            color: white;
+        }
+
+        .register-header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .register-header p {
+            font-size: 1em;
+            opacity: 0.95;
+        }
+
+        .register-form {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            background: #f9f9f9;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: #999;
+        }
+
+        .btn-register {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-register:active {
+            transform: translateY(0);
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .form-footer p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .form-footer a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .form-footer a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.95em;
+            transition: color 0.3s ease;
+        }
+
+        .back-link a:hover {
+            color: #764ba2;
+        }
+
+        @media (max-width: 768px) {
+            .register-header h1 {
+                font-size: 2em;
+            }
+
+            .register-form {
+                padding: 30px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="register-container">
+    <div class="register-header">
+        <h1>🎯 QuizMaster</h1>
+        <p>Create your account to start learning</p>
+    </div>
+
+    <div class="register-form">
+        <form th:action="@{/register}" th:method="post" th:object="${registerRequest}">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input  th:field="*{username}"
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Choose a username"
+                >
+                <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Error message</p>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input  th:field="*{email}"
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email"
+                >
+                <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Error message</p>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input  th:field="*{password}"
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Create a password"
+                >
+                <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Error message</p>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input  th:field="*{confirmPassword}"
+                        type="password"
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        placeholder="Confirm your password"
+                >
+                <p th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">Error message</p>
+            </div>
+
+            <button type="submit" class="btn-register">Create Account</button>
+
+            <div class="form-footer">
+                <p>Already have an account?</p>
+                <a href="/login">Login here</a>
+            </div>
+        </form>
+
+        <div class="back-link">
+            <a href="/">← Back to Main Page</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

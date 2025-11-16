@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - QuizMaster</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .back-btn {
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .page-title {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .page-title h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .page-title p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .stats-bar {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .filters-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: block;
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            width: 100%;
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .users-table-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow-x: auto;
+        }
+
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .users-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .users-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1em;
+        }
+
+        .users-table th:first-child {
+            border-top-left-radius: 10px;
+        }
+
+        .users-table th:last-child {
+            border-top-right-radius: 10px;
+        }
+
+        .users-table tbody tr {
+            border-bottom: 1px solid #e0e0e0;
+            transition: background 0.3s ease;
+        }
+
+        .users-table tbody tr:hover {
+            background: #f5f5f5;
+        }
+
+        .users-table td {
+            padding: 15px;
+            color: #333;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #667eea;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 3px;
+        }
+
+        .user-email {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .role-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .role-badge.admin {
+            background: #f44336;
+            color: white;
+        }
+
+        .role-badge.player {
+            background: #4caf50;
+            color: white;
+        }
+
+        .role-badge.quizmaster {
+            background: #ff9800;
+            color: white;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-edit {
+            background: #2196f3;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #1976d2;
+            transform: scale(1.05);
+        }
+
+        .btn-delete {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #d32f2f;
+            transform: scale(1.05);
+        }
+
+        .btn-toggle-role {
+            background: #ff9800;
+            color: white;
+        }
+
+        .btn-toggle-role:hover {
+            background: #f57c00;
+            transform: scale(1.05);
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        .status-active {
+            background: #4caf50;
+        }
+
+        .status-inactive {
+            background: #f44336;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .page-btn {
+            padding: 10px 15px;
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .page-btn:hover,
+        .page-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .no-users {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .modal-header h2 {
+            color: #333;
+            font-size: 1.8em;
+        }
+
+        .close-btn {
+            font-size: 2em;
+            color: #999;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn-save {
+            flex: 1;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-cancel {
+            flex: 1;
+            padding: 15px;
+            background: #e0e0e0;
+            color: #333;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel:hover {
+            background: #d0d0d0;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .page-title h1 {
+                font-size: 2em;
+            }
+
+            .filters-section {
+                flex-direction: column;
+            }
+
+            .users-table-container {
+                padding: 20px;
+            }
+
+            .users-table {
+                font-size: 0.9em;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .modal-content {
+                margin: 10% 20px;
+                padding: 25px;
+            }
+
+            .status-badge {
+                display: inline-block;
+                padding: 4px 10px;
+                border-radius: 12px;
+                font-size: 0.85em;
+                font-weight: 600;
+            }
+
+            .status-badge.active {
+                background-color: #e6f7e6;
+                color: #2e7d32;
+                border: 1px solid #2e7d32;
+            }
+
+            .status-badge.inactive {
+                background-color: #fdecea;
+                color: #c62828;
+                border: 1px solid #c62828;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">🎯 QuizMaster</div>
+        <a href="/home" class="back-btn">Back to Home</a>
+    </div>
+
+    <!-- Page Title -->
+    <div class="page-title">
+        <h1>User Management</h1>
+        <p>Manage all registered users and their permissions</p>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-value" th:text="${users.size()}">125</div>
+            <div class="stat-label">Total Users</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" th:text="${usersAdmin.size()}">3</div>
+            <div class="stat-label">Administrators</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" th:text="${usersQuizMaster.size()}">15</div>
+            <div class="stat-label">Quiz Masters</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" th:text="${usersPlayer.size()}">107</div>
+            <div class="stat-label">Players</div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-section">
+        <div class="filter-group">
+            <label for="searchInput">Search Users</label>
+            <input type="text" id="searchInput" placeholder="Search by username or email...">
+        </div>
+        <div class="filter-group">
+            <label for="roleFilter">Filter by Role</label>
+            <select id="roleFilter">
+                <option value="">All Roles</option>
+                <option value="ADMIN">Administrators</option>
+                <option value="QUIZMASTER">Quiz Masters</option>
+                <option value="PLAYER">Players</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="sortBy">Sort By</label>
+            <select id="sortBy">
+                <option value="username">Username</option>
+                <option value="email">Email</option>
+                <option value="score">Score</option>
+                <option value="level">Level</option>
+                <option value="created">Date Joined</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="users-table-container">
+        <table class="users-table">
+            <thead>
+            <tr>
+                <th>User</th>
+                <th>Role</th>
+                <th>Score</th>
+                <th>Level</th>
+                <th>Quizzes</th>
+                <th>Joined</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Sample User 1 -->
+            <tr th:each="user : ${users}">
+                <td>
+                    <div class="user-info">
+                        <img th:src="${user.avatarUrl}" alt="User Avatar" class="user-avatar">
+                        <div class="user-details">
+                            <span class="user-name" th:text="${user.username}">JohnDoe123</span>
+                            <span th:unless="${#strings.isEmpty(user.email)}" class="user-email" th:text="${user.email}">john.doe@example.com</span>
+                        </div>
+                    </div>
+                </td>
+                <td><span class="role-badge admin" th:text="${user.role.name()}">ADMIN</span></td>
+                <td th:text="${user.score}">12,450</td>
+                <td th:text="${user.level}">25</td>
+                <td th:text="${user.quizzes.size()}">48</td>
+                <td th:text="${user.createdOn}">Jan 15, 2024</td>
+                <td>
+                    <span th:if="${user.active}" class="status-badge active">Active</span>
+                    <span th:if="${!user.active}" class="status-badge inactive">Inactive</span>
+                </td>
+                <td>
+                    <div class="action-buttons">
+                        <a th:href="@{/users/edit/{username}(username=${user.username})}" class="btn btn-edit">Edit</a>
+                        <form th:action="@{/users/delete/{username}(username=${user.username})}" th:method="post" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                            <button type="submit" class="btn btn-delete">Delete</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Edit User Modal -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Edit User</h2>
+            <span class="close-btn" onclick="closeEditModal()">&times;</span>
+        </div>
+        <form action="/users/edit" method="post">
+            <input type="hidden" name="userId" id="editUserId">
+
+            <div class="form-group">
+                <label for="editUsername">Username</label>
+                <input type="text" id="editUsername" name="username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="editEmail">Email</label>
+                <input type="email" id="editEmail" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="editAvatarUrl">Avatar URL</label>
+                <input type="url" id="editAvatarUrl" name="avatarUrl">
+            </div>
+
+            <div class="form-group">
+                <label for="editRole">Role</label>
+                <select id="editRole" name="role" required>
+                    <option value="PLAYER">Player</option>
+                    <option value="QUIZMASTER">Quiz Master</option>
+                    <option value="ADMIN">Administrator</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="editScore">Score</label>
+                <input type="number" id="editScore" name="score" min="0">
+            </div>
+
+            <div class="form-group">
+                <label for="editLevel">Level</label>
+                <input type="number" id="editLevel" name="level" min="1">
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeEditModal()">Cancel</button>
+                <button type="submit" class="btn-save">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Open Edit Modal
+    function openEditModal(userId) {
+        const modal = document.getElementById('editModal');
+        modal.style.display = 'block';
+
+        // In a real application, you would fetch user data from the server
+        // For now, we'll just populate with sample data
+        document.getElementById('editUserId').value = userId;
+        document.getElementById('editUsername').value = 'SampleUser' + userId;
+        document.getElementById('editEmail').value = 'user' + userId + '@example.com';
+        document.getElementById('editAvatarUrl').value = 'https://via.placeholder.com/150';
+        document.getElementById('editRole').value = 'PLAYER';
+        document.getElementById('editScore').value = '1000';
+        document.getElementById('editLevel').value = '5';
+    }
+
+    // Close Edit Modal
+    function closeEditModal() {
+        const modal = document.getElementById('editModal');
+        modal.style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('editModal');
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    // Toggle User Role (removed as we now have Edit modal for role changes)
+    function toggleRole(userId) {
+        // This function is no longer needed since role changes are done via Edit modal
+        // Keeping it here in case you want to implement quick role toggle later
+    }
+
+    // Delete User
+    function deleteUser(userId) {
+        if (confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+            // In a real application, send delete request to server
+            console.log('Delete user:', userId);
+            alert('User deleted successfully!');
+            // Reload page or update UI
+        }
+    }
+
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const rows = document.querySelectorAll('.users-table tbody tr');
+
+        rows.forEach(row => {
+            const username = row.querySelector('.user-name').textContent.toLowerCase();
+            const email = row.querySelector('.user-email').textContent.toLowerCase();
+
+            if (username.includes(searchTerm) || email.includes(searchTerm)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+
+    // Role filter
+    document.getElementById('roleFilter').addEventListener('change', function(e) {
+        const filterValue = e.target.value;
+        const rows = document.querySelectorAll('.users-table tbody tr');
+
+        rows.forEach(row => {
+            const roleBadge = row.querySelector('.role-badge');
+
+            if (filterValue === '' || roleBadge.textContent === filterValue) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+</script>
+</body>
+</html>
