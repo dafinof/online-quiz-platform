@@ -189,6 +189,7 @@
                         placeholder="Choose a username"
                 >
                 <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Error message</p>
+                <p th:if="${errorMessage}" th:text="${errorMessage}">Error message</p>
             </div>
 
             <div class="form-group">
@@ -211,6 +212,7 @@
                         placeholder="Create a password"
                 >
                 <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Error message</p>
+                <p th:if="${errorMessagePass}" th:text="${errorMessagePass}">Error message</p>
             </div>
 
             <div class="form-group">

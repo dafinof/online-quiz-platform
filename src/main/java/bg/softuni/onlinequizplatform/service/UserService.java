@@ -1,5 +1,8 @@
 package bg.softuni.onlinequizplatform.service;
 
+import bg.softuni.onlinequizplatform.exception.PasswordMismatchException;
+import bg.softuni.onlinequizplatform.exception.UserNotFoundException;
+import bg.softuni.onlinequizplatform.exception.UsernameAlreadyExistException;
 import bg.softuni.onlinequizplatform.model.Quiz;
 import bg.softuni.onlinequizplatform.model.User;
 import bg.softuni.onlinequizplatform.model.UserRole;
@@ -36,7 +39,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User Not Found"));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User Not Found"));
 
         return new UserData(user.getId(), username, user.getPassword(), user.getRole(), user.isActive());
     }
@@ -45,11 +48,11 @@ public class UserService implements UserDetailsService {
         Optional<User> optionalUser = userRepository.findByUsername(registerRequest.getUsername());
 
         if (optionalUser.isPresent()) {
-            throw new RuntimeException("User Already Exists");
+            throw new UsernameAlreadyExistException("User Already Exists");
         }
 
         if (!registerRequest.getPassword().equals(registerRequest.getConfirmPassword())) {
-            throw new RuntimeException("Password Mismatch");
+            throw new PasswordMismatchException("Passwords Mismatch");
         }
 
         List<Quiz> quizzes = new ArrayList<>();
@@ -72,7 +75,7 @@ public class UserService implements UserDetailsService {
     }
 
     public User getByUsername(String username) {
-        return userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User Not Found"));
+        return userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User Not Found"));
     }
 
     public int getAverageSuccessPercent(User user) {
@@ -90,7 +93,7 @@ public class UserService implements UserDetailsService {
     }
 
     public User getById(UUID id) {
-        return  userRepository.findById(id).orElseThrow(() -> new RuntimeException("User Not Found"));
+        return  userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User Not Found"));
     }
 
     public void updateProfile(EditProfileRequest editProfileRequest) {
