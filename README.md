@@ -1,6 +1,6 @@
 Online Quiz Platform
 
-An interactive web application that allows users to take quizzes, track results, and compete on a global leaderboard.
+An interactive web application that allows users to take quizzes, track results, and compete on a global leaderboard. Reach new levels and become a quiz master.
 Built with Spring Boot, Thymeleaf, and MySQL, it supports dynamic quiz creation, execution, scoring, and secure user management.
 
 🚀 Tech Stack
