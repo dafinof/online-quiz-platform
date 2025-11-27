@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard - QuizMaster</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .back-btn {
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .page-title {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .page-title h1 {
+            font-size: 2.5em;
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .trophy-icon {
+            font-size: 1.2em;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .page-title p {
+            font-size: 1.1em;
+            color: #666;
+        }
+
+        .leaderboard-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .podium {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 40px;
+            align-items: flex-end;
+        }
+
+        .podium-place {
+            text-align: center;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .podium-place:nth-child(2) {
+            order: -1;
+        }
+
+        .podium-place:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .podium-place:nth-child(2) {
+            animation-delay: 0s;
+        }
+
+        .podium-place:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .podium-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            border: 4px solid;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            object-fit: cover;
+        }
+
+        .podium-place:nth-child(1) .podium-avatar {
+            border-color: #ffd700;
+            width: 120px;
+            height: 120px;
+        }
+
+        .podium-place:nth-child(2) .podium-avatar {
+            border-color: #c0c0c0;
+        }
+
+        .podium-place:nth-child(3) .podium-avatar {
+            border-color: #cd7f32;
+        }
+
+        .podium-rank {
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .rank-1 { color: #ffd700; }
+        .rank-2 { color: #c0c0c0; }
+        .rank-3 { color: #cd7f32; }
+
+        .podium-username {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .podium-score {
+            font-size: 1.5em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .leaderboard-list {
+            margin-top: 40px;
+        }
+
+        .leaderboard-list h2 {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .leaderboard-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-left-color: #667eea;
+        }
+
+        .item-rank {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .item-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid #667eea;
+            margin: 0 20px;
+            object-fit: cover;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-username {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .item-updated {
+            font-size: 0.9em;
+            color: #999;
+        }
+
+        .item-score {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #667eea;
+            margin-left: auto;
+            padding-left: 20px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            font-size: 1.1em;
+        }
+
+        .admin-controls {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .admin-controls h3 {
+            color: #856404;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .admin-controls p {
+            color: #856404;
+            margin-bottom: 20px;
+            font-size: 0.95em;
+        }
+
+        .admin-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .admin-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 10px;
+            margin-left: 15px;
+        }
+
+        .item-delete-btn {
+            padding: 8px 15px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .item-delete-btn:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .page-title h1 {
+                font-size: 2em;
+            }
+
+            .podium {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .podium-place:nth-child(2) {
+                order: 0;
+            }
+
+            .leaderboard-card {
+                padding: 25px;
+            }
+
+            .leaderboard-item {
+                flex-wrap: wrap;
+                justify-content: center;
+                text-align: center;
+            }
+
+            .item-avatar {
+                margin: 0 0 15px 0;
+            }
+
+            .item-info {
+                flex-basis: 100%;
+                order: 3;
+            }
+
+            .item-score {
+                flex-basis: 100%;
+                order: 4;
+                margin: 10px 0 0 0;
+                padding: 0;
+            }
+
+            .admin-buttons {
+                flex-direction: column;
+            }
+
+            .admin-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">🎯 QuizMaster</div>
+        <a href="/home" class="back-btn">Back to Home</a>
+    </div>
+
+    <!-- Page Title -->
+    <div class="page-title">
+        <h1>
+            <span class="trophy-icon">🏆</span>
+            Leaderboard
+            <span class="trophy-icon">🏆</span>
+        </h1>
+        <p>Top 10 performers in the QuizMaster community</p>
+    </div>
+
+    <!-- Leaderboard Card -->
+    <div class="leaderboard-card">
+        <!-- Admin Controls (Only show for ADMIN users) -->
+        <div class="admin-controls" th:if="${user != null and user.role.name() == 'ADMIN'}">
+            <h3>
+                <span>⚙️</span>
+                Admin Controls
+            </h3>
+            <p>Warning: These actions are irreversible. Please use with caution.</p>
+            <div class="admin-buttons">
+<!--                <form th:action="@{/leaderboard/delete-all}" th:method="POST" onsubmit="return confirm('Are you sure you want to delete ALL scores? This action cannot be undone!');">-->
+<!--                    <input type="hidden" name="_method" value="DELETE">-->
+<!--                    <button type="submit" class="admin-btn btn-danger">🗑️ Delete All Scores</button>-->
+<!--                </form>-->
+                <form th:action="@{/api/scores}" method="post"
+                      onsubmit="return confirm('Are you sure you want to delete ALL scores?');">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="admin-btn btn-danger">🗑️ Delete All Scores</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Top 3 Podium -->
+        <div class="podium" th:if="${topScores != null and topScores.size() >= 1}">
+            <!-- 1st Place -->
+            <div class="podium-place">
+                <div class="podium-rank rank-1">🥇</div>
+                <img th:src="${topScores.get(0).avatarUrl}" alt="User Profile" class="profile-image" style="width: 150px; height: 150px; object-fit: cover;">
+                <div class="podium-username" th:text="${topScores.get(0).username}">Username</div>
+                <div class="podium-score" th:text="${topScores.get(0).score}">12,450 pts</div>
+            </div>
+
+            <!-- 2nd Place -->
+            <div class="podium-place" th:if="${topScores != null and topScores.size() >= 2}">
+                <div class="podium-rank rank-2">🥈</div>
+                <img th:src="${topScores.get(1).avatarUrl}" alt="User Profile" class="profile-image" style="width: 150px; height: 150px; object-fit: cover;">
+                <div class="podium-username" th:text="${topScores.get(1).username}">Username</div>
+                <div class="podium-score" th:text="${topScores.get(1).score}">12,450 pts</div>
+            </div>
+
+            <!-- 3rd Place -->
+            <div class="podium-place" th:if="${topScores != null and topScores.size() >= 3}">
+                <div class="podium-rank rank-3">🥉</div>
+                <img th:src="${topScores.get(2).avatarUrl}" alt="User Profile" class="profile-image" style="width: 150px; height: 150px; object-fit: cover;">
+                <div class="podium-username" th:text="${topScores.get(2).username}">Username</div>
+                <div class="podium-score" th:text="${topScores.get(2).score}">12,450 pts</div>
+            </div>
+        </div>
+
+        <!-- Rest of the list (4th place and below) -->
+        <div class="leaderboard-list" th:if="${topScores != null and topScores.size() > 3}">
+            <h2>Complete Rankings</h2>
+
+            <!-- Sample item - use th:each to iterate -->
+            <div class="leaderboard-item" th:each="score, index : ${scoresAfterTopThree}">
+                <div class="item-rank" th:text="${index.index  + 4}">4</div>
+                <img th:src="${score.avatarUrl}" alt="User Profile" class="profile-image" style="width: 150px; height: 150px; object-fit: cover;">
+                <div class="item-info">
+                    <div class="item-username" th:text="${score.username}">Username</div>
+                    <div class="item-updated" th:text="${score.updatedOn}">Updated 2 hours ago</div>
+                </div>
+                <div class="item-score" th:text="${score.score}">8,540</div>
+
+                <!-- Delete button (only for ADMIN) -->
+                <div class="item-actions" th:if="${user != null and user.role.name() == 'ADMIN'}">
+<!--                    <form th:action="@{/leaderboard/delete/{id}(id=${score.id})}" th:method="POST" onsubmit="return confirm('Are you sure you want to remove this user?');">-->
+<!--                        <input type="hidden" name="_method" value="DELETE">-->
+<!--                        <button type="submit" class="item-delete-btn">Delete</button>-->
+<!--                    </form>-->
+                    <form th:action="@{/api/scores/{id}(id=${score.id})}" method="post"
+                          onsubmit="return confirm('Are you sure you want to remove this user?');">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button type="submit" class="item-delete-btn">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" th:if="${topScores == null or topScores.size() == 0}">
+            <div class="empty-state-icon">📊</div>
+            <h3>No Scores Yet</h3>
+            <p>Be the first to complete a quiz and appear on the leaderboard!</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

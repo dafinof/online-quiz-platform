@@ -8,10 +8,7 @@ import bg.softuni.onlinequizplatform.model.User;
 import bg.softuni.onlinequizplatform.model.UserRole;
 import bg.softuni.onlinequizplatform.repository.UserRepository;
 import bg.softuni.onlinequizplatform.security.UserData;
-import bg.softuni.onlinequizplatform.web.dto.EditProfileRequest;
-import bg.softuni.onlinequizplatform.web.dto.EditUserRequest;
-import bg.softuni.onlinequizplatform.web.dto.RegisterRequest;
-import jakarta.validation.Valid;
+import bg.softuni.onlinequizplatform.web.dto.*;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,13 +25,15 @@ import java.util.UUID;
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private static final String DEFAULT_AVATAR_URL = "https://st4.depositphotos.com/4177785/22707/v/450/depositphotos_227075876-stock-illustration-quiz-show-player-color-icon.jpg";
+    private static final String DEFAULT_AVATAR_URL = "https://www.shutterstock.com/image-photo/generate-quiz-night-poster-cartoon-260nw-2471934001.jpg";
     private static final int DEFAULT_SCORE = 0;
     private static final int DEFAULT_LEVEL = 1;
+    private final QuizService quizService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, QuizService quizService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.quizService = quizService;
     }
 
     @Override
@@ -55,8 +54,6 @@ public class UserService implements UserDetailsService {
             throw new PasswordMismatchException("Passwords Mismatch");
         }
 
-        List<Quiz> quizzes = new ArrayList<>();
-
         User user = User.builder()
                 .username(registerRequest.getUsername())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
@@ -68,7 +65,6 @@ public class UserService implements UserDetailsService {
                 .active(true)
                 .createdOn(LocalDateTime.now())
                 .updatedOn(LocalDateTime.now())
-                .quizzes(quizzes)
                 .build();
 
         userRepository.save(user);
@@ -79,7 +75,10 @@ public class UserService implements UserDetailsService {
     }
 
     public int getAverageSuccessPercent(User user) {
-        return user.getQuizzes().isEmpty() ? 0 : user.getScore() / user.getQuizzes().size();
+        List<Quiz> quizzes = new ArrayList<>();
+        quizzes = quizService.getAllQuizzesByUser(user.getId());
+
+        return quizzes.isEmpty() ? 0 : user.getScore() / (quizzes.size() * 2);
     }
 
     public List<User> getAllUsers() {
@@ -133,5 +132,20 @@ public class UserService implements UserDetailsService {
 
     public void save(User user) {
         userRepository.save(user);
+    }
+
+    public void setNewScore(User user, int quizScore) {
+        int score = user.getScore();
+        user.setScore(score + quizScore);
+        user.setLevel(user.getScore() / 1000 + 1);
+        userRepository.save(user);
+    }
+
+    public List<UserScoreResponse> getScoresAfterTopThree(List<UserScoreResponse> topScores) {
+        if (topScores.size() < 4) {
+            return topScores;
+        }
+
+        return topScores.subList(3, topScores.size());
     }
 }

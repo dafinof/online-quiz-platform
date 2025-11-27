@@ -4,6 +4,9 @@ import bg.softuni.onlinequizplatform.model.QuestionOption;
 import bg.softuni.onlinequizplatform.repository.QuestionOptionRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.UUID;
+
 @Service
 public class QuestionOptionService {
 
@@ -15,5 +18,13 @@ public class QuestionOptionService {
 
     public void save(QuestionOption questionOption) {
         questionOptionRepository.save(questionOption);
+    }
+
+    public List<QuestionOption> getAllOptions() {
+        return questionOptionRepository.findAll();
+    }
+
+    public void deleteQuestionOption(QuestionOption questionOption) {
+        questionOptionRepository.delete(questionOption);
     }
 }

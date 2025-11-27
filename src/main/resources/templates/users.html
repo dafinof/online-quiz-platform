@@ -570,33 +570,6 @@
         </div>
     </div>
 
-    <!-- Filters -->
-    <div class="filters-section">
-        <div class="filter-group">
-            <label for="searchInput">Search Users</label>
-            <input type="text" id="searchInput" placeholder="Search by username or email...">
-        </div>
-        <div class="filter-group">
-            <label for="roleFilter">Filter by Role</label>
-            <select id="roleFilter">
-                <option value="">All Roles</option>
-                <option value="ADMIN">Administrators</option>
-                <option value="QUIZMASTER">Quiz Masters</option>
-                <option value="PLAYER">Players</option>
-            </select>
-        </div>
-        <div class="filter-group">
-            <label for="sortBy">Sort By</label>
-            <select id="sortBy">
-                <option value="username">Username</option>
-                <option value="email">Email</option>
-                <option value="score">Score</option>
-                <option value="level">Level</option>
-                <option value="created">Date Joined</option>
-            </select>
-        </div>
-    </div>
-
     <!-- Users Table -->
     <div class="users-table-container">
         <table class="users-table">
@@ -627,7 +600,6 @@
                 <td><span class="role-badge admin" th:text="${user.role.name()}">ADMIN</span></td>
                 <td th:text="${user.score}">12,450</td>
                 <td th:text="${user.level}">25</td>
-                <td th:text="${user.quizzes.size()}">48</td>
                 <td th:text="${user.createdOn}">Jan 15, 2024</td>
                 <td>
                     <span th:if="${user.active}" class="status-badge active">Active</span>

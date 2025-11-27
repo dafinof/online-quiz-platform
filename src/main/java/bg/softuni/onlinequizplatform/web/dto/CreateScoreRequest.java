@@ -13,4 +13,5 @@ public class CreateScoreRequest {
     private UUID userId;
     private int score;
     private String username;
+    private String avatarUrl;
 }

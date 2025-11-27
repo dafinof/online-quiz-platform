@@ -239,6 +239,26 @@
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
 
+        .delete-quiz-btn {
+            width: 100%;
+            padding: 10px;
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+
+        .delete-quiz-btn:hover {
+            background: #d32f2f;
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(244, 67, 54, 0.4);
+        }
+
         @media (max-width: 768px) {
             .header {
                 flex-direction: column;
@@ -295,24 +315,23 @@
         <div class="quiz-grid">
             <div class="quiz-card" th:each="quiz : ${quizzesGeography}">
                 <div class="quiz-name" th:text="${quiz.name}">World Capitals</div>
+                <div><img th:src="${quiz.imageUrl}" alt="User Profile" class="profile-image" style="width: 100px; height: 100px; object-fit: cover;"></div>
                 <div class="quiz-description" th:text="${quiz.description}">Can you name the capitals of countries around the world?</div>
-                <div class="quiz-meta">
-                    <span th:if="${quiz.questions.size() < 4}" class="difficulty easy">Easy</span>
-                    <span th:if="${quiz.questions.size() > 3 and quiz.questions.size() < 8}" class="difficulty medium">Medium</span>
-                    <span th:if="${quiz.questions.size() > 7}" class="difficulty hard">Hard</span>
-                    <span th:text="'⏱️ ' + ${#numbers.formatInteger(quiz.questions.size() * 1.5, 2)} + ' min'">⏱️ 10 min</span>
-                </div>
                 <div class="quiz-stats">
-                    <div class="stat-item">
-                        <span>📝</span>
-                        <span th:text="${quiz.questions.size()} + ' questions'">20 questions</span>
-                    </div>
                     <div class="stat-item">
                         <span>🎯</span>
                         <span th:text="${quiz.score} + ' score'">score</span>
                     </div>
                 </div>
                 <a th:href="@{/quiz/{id}(id=${quiz.id})}" class="start-quiz-btn">Start Quiz</a>
+                <form th:if="${user != null and user.role.name() == 'ADMIN'}"
+                      th:action="@{/quizzes/delete/{id}(id=${quiz.id})}"
+                      method="post"
+                      onsubmit="return confirm('Are you sure you want to delete this quiz?');"
+                      style="margin: 0;">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="delete-quiz-btn">Delete Quiz</button>
+                </form>
             </div>
         </div>
     </div>
@@ -329,24 +348,23 @@
         <div class="quiz-grid">
             <div class="quiz-card" th:each="quiz : ${quizzesHistory}">
                 <div class="quiz-name" th:text="${quiz.name}">World Capitals</div>
+                <div><img th:src="${quiz.imageUrl}" alt="User Profile" class="profile-image" style="width: 100px; height: 100px; object-fit: cover;"></div>
                 <div class="quiz-description" th:text="${quiz.description}">Can you name the capitals of countries around the world?</div>
-                <div class="quiz-meta">
-                    <span th:if="${quiz.questions.size() < 4}" class="difficulty easy">Easy</span>
-                    <span th:if="${quiz.questions.size() > 3 and quiz.questions.size() < 8}" class="difficulty medium">Medium</span>
-                    <span th:if="${quiz.questions.size() > 7}" class="difficulty hard">Hard</span>
-                    <span th:text="'⏱️ ' + ${#numbers.formatInteger(quiz.questions.size() * 1.5, 2)} + ' min'">⏱️ 10 min</span>
-                </div>
                 <div class="quiz-stats">
-                    <div class="stat-item">
-                        <span>📝</span>
-                        <span th:text="${quiz.questions.size()} + ' questions'">20 questions</span>
-                    </div>
                     <div class="stat-item">
                         <span>🎯</span>
                         <span th:text="${quiz.score} + ' score'">score</span>
                     </div>
                 </div>
                 <a th:href="@{/quiz/{id}(id=${quiz.id})}" class="start-quiz-btn">Start Quiz</a>
+                <form th:if="${user != null and user.role.name() == 'ADMIN'}"
+                      th:action="@{/quizzes/delete/{id}(id=${quiz.id})}"
+                      method="post"
+                      onsubmit="return confirm('Are you sure you want to delete this quiz?');"
+                      style="margin: 0;">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="delete-quiz-btn">Delete Quiz</button>
+                </form>
             </div>
         </div>
     </div>
@@ -363,24 +381,23 @@
         <div class="quiz-grid">
             <div class="quiz-card" th:each="quiz : ${quizzesMusic}">
                 <div class="quiz-name" th:text="${quiz.name}">World Capitals</div>
+                <div><img th:src="${quiz.imageUrl}" alt="User Profile" class="profile-image" style="width: 100px; height: 100px; object-fit: cover;"></div>
                 <div class="quiz-description" th:text="${quiz.description}">Can you name the capitals of countries around the world?</div>
-                <div class="quiz-meta">
-                    <span th:if="${quiz.questions.size() < 4}" class="difficulty easy">Easy</span>
-                    <span th:if="${quiz.questions.size() > 3 and quiz.questions.size() < 8}" class="difficulty medium">Medium</span>
-                    <span th:if="${quiz.questions.size() > 7}" class="difficulty hard">Hard</span>
-                    <span th:text="'⏱️ ' + ${#numbers.formatInteger(quiz.questions.size() * 1.5, 2)} + ' min'">⏱️ 10 min</span>
-                </div>
                 <div class="quiz-stats">
-                    <div class="stat-item">
-                        <span>📝</span>
-                        <span th:text="${quiz.questions.size()} + ' questions'">20 questions</span>
-                    </div>
                     <div class="stat-item">
                         <span>🎯</span>
                         <span th:text="${quiz.score} + ' score'">score</span>
                     </div>
                 </div>
                 <a th:href="@{/quiz/{id}(id=${quiz.id})}" class="start-quiz-btn">Start Quiz</a>
+                <form th:if="${user != null and user.role.name() == 'ADMIN'}"
+                      th:action="@{/quizzes/delete/{id}(id=${quiz.id})}"
+                      method="post"
+                      onsubmit="return confirm('Are you sure you want to delete this quiz?');"
+                      style="margin: 0;">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="delete-quiz-btn">Delete Quiz</button>
+                </form>
             </div>
         </div>
     </div>

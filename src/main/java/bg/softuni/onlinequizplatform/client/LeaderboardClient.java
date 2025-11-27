@@ -12,11 +12,8 @@ import java.util.UUID;
 @FeignClient(name = "leaderboard-service", url = "http://localhost:8081")
 public interface LeaderboardClient {
 
-    @PostMapping("/api/scores")
-    UserScoreResponse createScore(CreateScoreRequest request);
-
     @PutMapping("/api/scores/{id}")
-    UserScoreResponse updateScore(UpdateScoreRequest request, @PathVariable UUID id);
+    UserScoreResponse upsertScore(@RequestBody CreateScoreRequest request, @PathVariable UUID id);
 
     @DeleteMapping("/api/scores/{id}")
     void deleteScore(@PathVariable UUID id);
@@ -24,6 +21,6 @@ public interface LeaderboardClient {
     @DeleteMapping("/api/scores")
     void deleteAllScores();
 
-    @GetMapping("api/scores/top")
+    @GetMapping("/api/scores/top")
     List<UserScoreResponse> getTopScores();
 }

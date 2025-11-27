@@ -46,7 +46,7 @@
             align-items: center;
         }
 
-        .header-left {
+        .header-quiz {
             display: flex;
             align-items: center;
             gap: 30px;
@@ -258,7 +258,7 @@
                 text-align: center;
             }
 
-            .header-left {
+            .header-quiz {
                 flex-direction: column;
                 gap: 15px;
             }
@@ -297,24 +297,13 @@
 <body>
 <div class="container">
     <div class="header">
-        <div class="header-left">
+        <div class="header-quiz">
             <div class="logo">🎯 QuizMaster</div>
             <div class="quiz-title">
                 <h2 th:text="${quiz.name}">World Capitals</h2>
                 <p th:text="${quiz.description}">Test your knowledge of world capitals</p>
             </div>
-        </div>
-        <div class="progress-section">
-            <div class="timer" id="timer">
-                <span>⏱️</span>
-                <span id="timerText">10:00</span>
-            </div>
-            <div class="progress-info">
-                <p id="questionCounter">1 / 10</p>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
-            </div>
+            <img th:src="${quiz.imageUrl}" alt="User Profile" class="profile-image" style="width: 100px; height: 100px; object-fit: cover;">
         </div>
     </div>
     <div class="quiz-content">
@@ -324,6 +313,7 @@
             <input type="hidden" th:field="*{imageUrl}">
             <input type="hidden" th:field="*{category}">
             <input type="hidden" th:field="*{description}">
+            <input type="hidden" th:field="*{score}">
 
             <div id="questionsContainer">
                 <div th:each="question, qStat : *{questions}"

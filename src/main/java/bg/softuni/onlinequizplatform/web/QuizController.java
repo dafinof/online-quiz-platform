@@ -7,17 +7,16 @@ import bg.softuni.onlinequizplatform.model.User;
 import bg.softuni.onlinequizplatform.security.UserData;
 import bg.softuni.onlinequizplatform.service.QuizService;
 import bg.softuni.onlinequizplatform.service.UserService;
-import bg.softuni.onlinequizplatform.web.dto.CreateScoreRequest;
 import bg.softuni.onlinequizplatform.web.dto.DtoMapperQuiz;
 import bg.softuni.onlinequizplatform.web.dto.NewQuizRequest;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -28,20 +27,21 @@ import java.util.UUID;
 public class QuizController {
 
     private final QuizService quizService;
+    private final DtoMapperQuiz dtoMapperQuiz;
     private final UserService userService;
-    private final LeaderboardClient leaderboardClient;
 
-    public QuizController(QuizService quizService, UserService userService, LeaderboardClient leaderboardClient) {
+    public QuizController(QuizService quizService, UserService userService, LeaderboardClient leaderboardClient, DtoMapperQuiz dtoMapperQuiz) {
         this.quizService = quizService;
+        this.dtoMapperQuiz = dtoMapperQuiz;
         this.userService = userService;
-        this.leaderboardClient = leaderboardClient;
     }
 
     @GetMapping("/quizzes")
-    public ModelAndView getQuizzesPage() {
+    public ModelAndView getQuizzesPage(@AuthenticationPrincipal UserData userData) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("quizzes");
 
+        User user = userService.getByUsername(userData.getUsername());
         List<Quiz> quizzesGeography = quizService.getAllQuizzesByCategory(Category.GEOGRAPHY);
         List<Quiz> quizzesHistory = quizService.getAllQuizzesByCategory(Category.HISTORY);
         List<Quiz> quizzesMusic = quizService.getAllQuizzesByCategory(Category.MUSIC);
@@ -49,6 +49,7 @@ public class QuizController {
         modelAndView.addObject("quizzesGeography", quizzesGeography);
         modelAndView.addObject("quizzesHistory", quizzesHistory);
         modelAndView.addObject("quizzesMusic", quizzesMusic);
+        modelAndView.addObject("user", user);
 
         return modelAndView;
     }
@@ -84,7 +85,7 @@ public class QuizController {
         }
 
         Quiz quizOriginal = quizById.get();
-        NewQuizRequest quiz = DtoMapperQuiz.fromQuizToNewQuizRequest(quizOriginal);
+        NewQuizRequest quiz = dtoMapperQuiz.fromQuizToNewQuizRequest(quizOriginal);
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("quiz");
@@ -93,32 +94,21 @@ public class QuizController {
         return  modelAndView;
     }
 
+    @DeleteMapping("/quizzes/delete/{id}")
+    public String deleteQuiz(@PathVariable("id") UUID id) {
+        quizService.deleteQuizById(id);
+
+        return "redirect:/quizzes";
+    }
+
     @PostMapping("/quiz/submit")
     public ModelAndView submitQuiz(NewQuizRequest quizRequest, @AuthenticationPrincipal UserData userData) {
-
-        Optional<Quiz> optionalQuiz = quizService.getById(quizRequest.getId());
-        if (optionalQuiz.isEmpty()) {
-            throw new RuntimeException("Quiz not found: " + quizRequest.getId());
-        }
-
         User user = userService.getById(userData.getUserId());
-        Quiz quiz = optionalQuiz.get();
+        int quizEarnedScore = quizService.getQuizEarnedScore(quizRequest);
 
-        user.getQuizzes().add(quiz);
-        // TODO To set the score based on correct answers - no logic in the controller, set it through the service
-        user.setScore(user.getScore() + quiz.getScore());
-        userService.save(user);
-
-        leaderboardClient.createScore(new CreateScoreRequest(userData.getUserId(), user.getScore(), user.getUsername()));
+        userService.setNewScore(user, quizEarnedScore);
+        quizService.submitQuiz(quizRequest, user);
 
         return new ModelAndView("redirect:/quizzes");
     }
-
-    @GetMapping("result-page") // TODO either link the result page or remove it
-    public ModelAndView getResultPage() {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("result-page");
-        return modelAndView;
-    }
-
 }

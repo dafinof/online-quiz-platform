@@ -26,6 +26,8 @@ public class Quiz {
 
     private int score;
 
+    private int earnedScore;
+
     private String imageUrl;
 
     private String description;
@@ -35,9 +37,6 @@ public class Quiz {
 
     @Column(nullable = false)
     private LocalDateTime updatedOn;
-
-    @OneToMany(mappedBy = "quiz")
-    private List<Question> questions;
 
     @ManyToOne
     private User user;

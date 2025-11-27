@@ -2,6 +2,7 @@ package bg.softuni.onlinequizplatform.web.dto;
 
 import bg.softuni.onlinequizplatform.model.Category;
 import bg.softuni.onlinequizplatform.model.Question;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -29,6 +30,7 @@ public class NewQuizRequest {
     @URL
     private String imageUrl;
 
+    @Min(0)
     private int score;
 
     @NotNull

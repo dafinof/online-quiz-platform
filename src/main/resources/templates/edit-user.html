@@ -339,14 +339,11 @@
     <div class="form-container">
         <!-- User Preview -->
         <div class="user-preview">
-            <img src="https://via.placeholder.com/100" alt="User Avatar" class="preview-avatar">
+            <img th:src="${user.avatarUrl}" alt="User Avatar" class="preview-avatar">
             <div class="preview-info">
-                <div class="preview-username">JohnDoe123</div>
-                <div class="preview-email">john.doe@example.com</div>
+                <div class="preview-username" th:text="${user.username}">JohnDoe123</div>
+                <div class="preview-email" th:text="${user.email}">john.doe@example.com</div>
                 <div class="preview-meta">
-<!--                    <span>📊 Score: 12,450</span>-->
-<!--                    <span>🎯 Level: 25</span>-->
-<!--                    <span>✅ Active</span>-->
                     <span th:text="'📊 Score: ' + ${user.score}">📊 Score: 12,450</span>
                     <span th:text="'🎯 Level: ' + ${user.level}">🎯 Level: 25</span>
                     <span th:if="${user.active}" style="color: #4caf50;">✅ Active</span>

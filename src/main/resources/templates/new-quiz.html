@@ -123,6 +123,7 @@
         }
 
         .form-group input[type="text"],
+        .form-group input[type="number"],
         .form-group input[type="url"],
         .form-group select,
         .form-group textarea {
@@ -366,13 +367,25 @@
                 <div class="form-group">
                     <label for="quizName">Quiz Name *</label>
                     <input type="text" id="quizName" th:field="*{name}" required placeholder="Enter quiz name">
-                    <p class="error-message" th:if="${#fields.hasErrors('name')}" th-errors="*{name}"></p>
+                    <p class="error-message" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
                 </div>
 
                 <div class="form-group">
                     <label for="imageUrl">Image URL</label>
                     <input type="url" id="imageUrl" th:field="*{imageUrl}" placeholder="https://example.com/image.jpg">
-                    <p class="error-message" th:if="${#fields.hasErrors('imageUrl')}" th-errors="*{imageUrl}"></p>
+                    <p class="error-message" th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}"></p>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">description</label>
+                    <input type="text" id="description" th:field="*{description}">
+                    <p class="error-message" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
+                </div>
+
+                <div class="form-group">
+                    <label for="score">score</label>
+                    <input type="number" id="score" th:field="*{score}">
+                    <p class="error-message" th:if="${#fields.hasErrors('score')}" th:errors="*{score}"></p>
                 </div>
 
                 <div class="form-group">
@@ -382,7 +395,7 @@
                         <option th:each="c : ${T(bg.softuni.onlinequizplatform.model.Category).values()}"
                                 th:value="${c}" th:text="${c.name()}"></option>
                     </select>
-                    <p class="error-message" th:if="${#fields.hasErrors('category')}" th-errors="*{category}"></p>
+                    <p class="error-message" th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></p>
                 </div>
             </div>
 

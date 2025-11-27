@@ -296,7 +296,7 @@
                 <div class="stat-label">Total Score</div>
             </div>
             <div class="stat-box">
-                <div class="stat-value" th:text="${user.quizzes.size()}">quizzes</div>
+                <div class="stat-value" th:text="${quizzes.size()}">quizzes</div>
                 <div class="stat-label">Quizzes Completed</div>
             </div>
             <div class="stat-box">
@@ -329,18 +329,11 @@
     <!-- Recent Activity -->
     <div class="recent-activity">
         <h3>Recent Activity</h3>
-        <div class="activity-item" th:each="quiz : ${user.quizzes}">
+        <div class="activity-item" th:each="quiz : ${quizzes}">
             <div class="activity-title" th:text="'Completed: ' + ${quiz.name} + ' Quiz'">Completed:  Quiz</div>
-            <div class="activity-details" th:text="'Score: ' + ${quiz.score}">Score: 90% • 2 hours ago</div>
+            <div class="activity-details" th:text="'Score: ' + ${quiz.score}">Score: 90% </div>
         </div>
-        <div class="activity-item">
-            <div class="activity-title">Completed: World History Quiz</div>
-            <div class="activity-details">Score: 75% • 1 day ago</div>
-        </div>
-        <div class="activity-item">
-            <div class="activity-title">Completed: Science Trivia</div>
-            <div class="activity-details">Score: 95% • 3 days ago</div>
-        </div>
+        <div class="activity-item" th:if="${quizzes.isEmpty()}">No completed quizzes yet</div>
     </div>
     <div th:if="${user.role == user.role.ADMIN}" class="action-section" style="margin-top: 30px;">
         <h2>User Management</h2>

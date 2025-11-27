@@ -1,8 +1,10 @@
 package bg.softuni.onlinequizplatform.web;
 
+import bg.softuni.onlinequizplatform.model.Quiz;
 import bg.softuni.onlinequizplatform.model.User;
 import bg.softuni.onlinequizplatform.model.UserRole;
 import bg.softuni.onlinequizplatform.security.UserData;
+import bg.softuni.onlinequizplatform.service.QuizService;
 import bg.softuni.onlinequizplatform.service.UserService;
 import bg.softuni.onlinequizplatform.web.dto.DtoMapperProfile;
 import bg.softuni.onlinequizplatform.web.dto.DtoMapperUser;
@@ -24,20 +26,24 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final QuizService quizService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, QuizService quizService) {
         this.userService = userService;
+        this.quizService = quizService;
     }
 
     @GetMapping("/home")
     public ModelAndView getHomePage(@AuthenticationPrincipal UserData userData) {
         User user = userService.getByUsername(userData.getUsername());
         int averageScore = userService.getAverageSuccessPercent(user);
+        List<Quiz> quizzes = quizService.getAllQuizzesByUser(user.getId());
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("home");
         modelAndView.addObject("user", user);
         modelAndView.addObject("averageScore", averageScore);
+        modelAndView.addObject("quizzes", quizzes);
 
         return modelAndView;
     }

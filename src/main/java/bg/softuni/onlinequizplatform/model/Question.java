@@ -20,9 +20,6 @@ public class Question {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "question")
-    private List<QuestionOption> options;
-
     @ManyToOne
     private Quiz quiz;
 }

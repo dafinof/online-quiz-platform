@@ -44,7 +44,4 @@ public class User {
 
     @Column(nullable = false)
     private LocalDateTime updatedOn;
-
-    @OneToMany(mappedBy = "user")
-    private List<Quiz> quizzes;
 }
