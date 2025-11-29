@@ -506,7 +506,7 @@
                 <img th:src="${score.avatarUrl}" alt="User Profile" class="profile-image" style="width: 150px; height: 150px; object-fit: cover;">
                 <div class="item-info">
                     <div class="item-username" th:text="${score.username}">Username</div>
-                    <div class="item-updated" th:text="${score.updatedOn}">Updated 2 hours ago</div>
+                    <div class="item-updated" th:text="'Updated on ' + ${#temporals.format(score.updatedOn, 'MMM dd, yyyy HH:mm')}">Updated 2 hours ago</div>
                 </div>
                 <div class="item-score" th:text="${score.score}">8,540</div>
 

@@ -10,6 +10,7 @@ import bg.softuni.onlinequizplatform.service.UserService;
 import bg.softuni.onlinequizplatform.web.dto.DtoMapperQuiz;
 import bg.softuni.onlinequizplatform.web.dto.NewQuizRequest;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -55,6 +56,7 @@ public class QuizController {
     }
 
     @GetMapping("/new-quiz")
+    @PreAuthorize("hasAnyRole('ADMIN','QUIZMASTER')")
     public ModelAndView getNewQuizPage() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("new-quiz");
@@ -64,6 +66,7 @@ public class QuizController {
     }
 
     @PostMapping("/new-quiz")
+    @PreAuthorize("hasAnyRole('ADMIN','QUIZMASTER')")
     public ModelAndView postNewQuiz(@Valid NewQuizRequest newQuizRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             ModelAndView modelAndView = new ModelAndView();
@@ -95,6 +98,7 @@ public class QuizController {
     }
 
     @DeleteMapping("/quizzes/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String deleteQuiz(@PathVariable("id") UUID id) {
         quizService.deleteQuizById(id);
 

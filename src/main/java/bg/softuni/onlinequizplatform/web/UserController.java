@@ -11,6 +11,7 @@ import bg.softuni.onlinequizplatform.web.dto.DtoMapperUser;
 import bg.softuni.onlinequizplatform.web.dto.EditProfileRequest;
 import bg.softuni.onlinequizplatform.web.dto.EditUserRequest;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -49,6 +50,7 @@ public class UserController {
     }
 
     @GetMapping("/users")
+    @PreAuthorize("hasRole('ADMIN')")
     public ModelAndView getUsersPage() {
         List<User> users = userService.getAllUsers();
         List<User> usersPlayer = userService.getUsersByRole(UserRole.PLAYER);
@@ -66,6 +68,7 @@ public class UserController {
     }
 
     @GetMapping("/users/edit/{username}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ModelAndView editUserPage(@PathVariable String username) {
         User user = userService.getByUsername(username);
         EditUserRequest editUserRequest = DtoMapperUser.fromUserToEditUserRequest(user);
@@ -79,6 +82,7 @@ public class UserController {
     }
 
     @PutMapping("/users/edit/{username}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ModelAndView editUser(@Valid EditUserRequest editUserRequest, BindingResult bindingResult, @PathVariable String username) {
         User user = userService.getByUsername(username);
 
@@ -97,6 +101,7 @@ public class UserController {
     }
 
     @PostMapping("/users/delete/{username}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String deleteUser(@PathVariable String username) {
         userService.deleteUser(username);
 

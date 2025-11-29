@@ -9,6 +9,8 @@ import bg.softuni.onlinequizplatform.model.UserRole;
 import bg.softuni.onlinequizplatform.repository.UserRepository;
 import bg.softuni.onlinequizplatform.security.UserData;
 import bg.softuni.onlinequizplatform.web.dto.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,6 +25,7 @@ import java.util.UUID;
 
 @Service
 public class UserService implements UserDetailsService {
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private static final String DEFAULT_AVATAR_URL = "https://www.shutterstock.com/image-photo/generate-quiz-night-poster-cartoon-260nw-2471934001.jpg";
@@ -44,13 +47,17 @@ public class UserService implements UserDetailsService {
     }
 
     public void register(RegisterRequest registerRequest) {
+        logger.info("Attempting to register user '{}'", registerRequest.getUsername());
+
         Optional<User> optionalUser = userRepository.findByUsername(registerRequest.getUsername());
 
         if (optionalUser.isPresent()) {
+            logger.warn("Registration failed — '{}' already exists", registerRequest.getUsername());
             throw new UsernameAlreadyExistException("User Already Exists");
         }
 
         if (!registerRequest.getPassword().equals(registerRequest.getConfirmPassword())) {
+            logger.warn("Registration failed — passwords mismatch");
             throw new PasswordMismatchException("Passwords Mismatch");
         }
 
@@ -68,6 +75,7 @@ public class UserService implements UserDetailsService {
                 .build();
 
         userRepository.save(user);
+        logger.info("User registered successfully");
     }
 
     public User getByUsername(String username) {
@@ -138,6 +146,12 @@ public class UserService implements UserDetailsService {
         int score = user.getScore();
         user.setScore(score + quizScore);
         user.setLevel(user.getScore() / 1000 + 1);
+        user.setUpdatedOn(LocalDateTime.now());
+
+        if (user.getScore() > 10000 && user.getRole() != UserRole.ADMIN && user.getRole() != UserRole.QUIZMASTER) {
+            user.setRole(UserRole.QUIZMASTER);
+        }
+
         userRepository.save(user);
     }
 

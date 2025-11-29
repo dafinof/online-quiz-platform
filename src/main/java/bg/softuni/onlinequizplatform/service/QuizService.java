@@ -7,6 +7,8 @@ import bg.softuni.onlinequizplatform.web.dto.CreateScoreRequest;
 import bg.softuni.onlinequizplatform.web.dto.NewQuizRequest;
 import bg.softuni.onlinequizplatform.web.dto.QuestionOptionRequest;
 import bg.softuni.onlinequizplatform.web.dto.QuestionRequest;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,8 +34,8 @@ public class QuizService {
     }
 
     @Transactional
+    @CacheEvict(value = "quizzesByCategory", allEntries = true)
     public void createNewQuiz(NewQuizRequest newQuizRequest) {
-        //String description = newQuizRequest.description - ako e prazno da slova defaultno neshto
         Quiz quiz = Quiz.builder()
                 .name(newQuizRequest.getName())
                 .imageUrl(newQuizRequest.getImageUrl())
@@ -71,6 +73,7 @@ public class QuizService {
         quizRepository.save(quiz);
     }
 
+    @Cacheable("quizzesByCategory")
     public List<Quiz> getAllQuizzesByCategory(Category category) {
         return quizRepository.findByCategory(category);
     }
@@ -114,9 +117,10 @@ public class QuizService {
     }
 
     public List<Quiz> getAllQuizzesByUser(UUID id) {
-        return quizRepository.findAllByUser_Id(id);
+        return quizRepository.findAllByUser_IdOrderByUpdatedOnDesc(id);
     }
 
+    @CacheEvict(value = "quizzesByCategory", allEntries = true)
     public void deleteQuizById(UUID id) {
         Quiz quiz = quizRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Quiz not found: " + id));
 
