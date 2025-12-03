@@ -82,7 +82,7 @@ public class QuizService {
         return quizRepository.findById(id);
     }
 
-    //@Transactional
+    @Transactional
     public void submitQuiz(NewQuizRequest quizRequest, User user) {
         Optional<Quiz> optionalQuiz = getById(quizRequest.getId());
         if (optionalQuiz.isEmpty()) {
@@ -100,7 +100,7 @@ public class QuizService {
     }
 
     public int getQuizEarnedScore(NewQuizRequest quizRequest) {
-        int quizScore = 0;
+        int quizScore;
         int correctAnswers = 0;
 
         for (QuestionRequest questionRequest : quizRequest.getQuestions()) {

@@ -15,7 +15,7 @@ public class GlobalControllerAdvice {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(UserNotFoundException.class)
-    public ModelAndView handleExceptionUserNotFound(UserNotFoundException e) {
+    public ModelAndView handleExceptionUserNotFound() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("user-not-found");
 
@@ -37,7 +37,7 @@ public class GlobalControllerAdvice {
     }
 
     @ExceptionHandler(Exception.class)
-    public ModelAndView handleExceptionAllNotCaught(Exception e) {
+    public ModelAndView handleExceptionAllNotCaught() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("default-error");
 

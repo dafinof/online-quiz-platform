@@ -18,7 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -83,8 +82,7 @@ public class UserService implements UserDetailsService {
     }
 
     public int getAverageSuccessPercent(User user) {
-        List<Quiz> quizzes = new ArrayList<>();
-        quizzes = quizService.getAllQuizzesByUser(user.getId());
+        List<Quiz> quizzes = quizService.getAllQuizzesByUser(user.getId());
 
         return quizzes.isEmpty() ? 0 : user.getScore() / (quizzes.size() * 2);
     }

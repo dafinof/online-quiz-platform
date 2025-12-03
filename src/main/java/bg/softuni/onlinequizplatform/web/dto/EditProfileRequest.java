@@ -1,6 +1,5 @@
 package bg.softuni.onlinequizplatform.web.dto;
 
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.validator.constraints.URL;

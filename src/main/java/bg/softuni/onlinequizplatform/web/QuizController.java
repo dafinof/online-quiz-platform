@@ -1,6 +1,5 @@
 package bg.softuni.onlinequizplatform.web;
 
-import bg.softuni.onlinequizplatform.client.LeaderboardClient;
 import bg.softuni.onlinequizplatform.model.Category;
 import bg.softuni.onlinequizplatform.model.Quiz;
 import bg.softuni.onlinequizplatform.model.User;
@@ -31,7 +30,7 @@ public class QuizController {
     private final DtoMapperQuiz dtoMapperQuiz;
     private final UserService userService;
 
-    public QuizController(QuizService quizService, UserService userService, LeaderboardClient leaderboardClient, DtoMapperQuiz dtoMapperQuiz) {
+    public QuizController(QuizService quizService, UserService userService, DtoMapperQuiz dtoMapperQuiz) {
         this.quizService = quizService;
         this.dtoMapperQuiz = dtoMapperQuiz;
         this.userService = userService;

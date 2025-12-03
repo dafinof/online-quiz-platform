@@ -1,7 +1,6 @@
 package bg.softuni.onlinequizplatform.web.dto;
 
 import bg.softuni.onlinequizplatform.model.Category;
-import bg.softuni.onlinequizplatform.model.Question;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

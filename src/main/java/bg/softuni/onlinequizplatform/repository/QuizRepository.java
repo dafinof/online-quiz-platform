@@ -12,7 +12,5 @@ import java.util.UUID;
 public interface QuizRepository extends JpaRepository<Quiz, UUID> {
     List<Quiz> findByCategory(Category category);
 
-    List<Quiz> findAllByUser_Id(UUID userId);
-
     List<Quiz> findAllByUser_IdOrderByUpdatedOnDesc(UUID userId);
 }

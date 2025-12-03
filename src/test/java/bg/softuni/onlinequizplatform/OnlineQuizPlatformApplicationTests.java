@@ -10,4 +10,9 @@ class OnlineQuizPlatformApplicationTests {
     void contextLoads() {
     }
 
+    @Test
+    void main_shouldRunWithoutExceptions() {
+        OnlineQuizPlatformApplication.main(new String[]{});
+    }
+
 }

@@ -5,8 +5,6 @@ import bg.softuni.onlinequizplatform.model.QuestionOption;
 import bg.softuni.onlinequizplatform.model.Quiz;
 import bg.softuni.onlinequizplatform.repository.QuestionOptionRepository;
 import bg.softuni.onlinequizplatform.repository.QuestionRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.UtilityClass;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
