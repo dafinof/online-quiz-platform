@@ -26,21 +26,16 @@ public class UserDataTest {
         );
     }
 
-    // ==================== Constructor and Field Tests ====================
-
     @Test
     void constructor_shouldInitializeAllFields() {
-        // Arrange
         UUID userId = createTestUserId();
         String username = "testuser";
         String password = "encoded_password";
         UserRole role = UserRole.PLAYER;
         boolean isActive = true;
 
-        // Act
         UserData userData = new UserData(userId, username, password, role, isActive);
 
-        // Assert
         assertEquals(userId, userData.getUserId());
         assertEquals(username, userData.getUsername());
         assertEquals(password, userData.getPassword());
@@ -50,10 +45,8 @@ public class UserDataTest {
 
     @Test
     void constructor_withInactiveAccount_shouldSetIsAccountActiveFalse() {
-        // Arrange & Act
         UserData userData = createTestUserData(UserRole.PLAYER, false);
 
-        // Assert
         assertFalse(userData.isAccountActive());
     }
 
@@ -61,13 +54,10 @@ public class UserDataTest {
 
     @Test
     void getAuthorities_withPlayerRole_shouldReturnRolePlayerAuthority() {
-        // Arrange
         UserData userData = createTestUserData(UserRole.PLAYER, true);
 
-        // Act
         Collection<? extends GrantedAuthority> authorities = userData.getAuthorities();
 
-        // Assert
         assertEquals(1, authorities.size());
         assertTrue(authorities.stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_PLAYER")));
@@ -75,13 +65,10 @@ public class UserDataTest {
 
     @Test
     void getAuthorities_withAdminRole_shouldReturnRoleAdminAuthority() {
-        // Arrange
         UserData userData = createTestUserData(UserRole.ADMIN, true);
 
-        // Act
         Collection<? extends GrantedAuthority> authorities = userData.getAuthorities();
 
-        // Assert
         assertEquals(1, authorities.size());
         assertTrue(authorities.stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN")));
@@ -89,13 +76,10 @@ public class UserDataTest {
 
     @Test
     void getAuthorities_withQuizmasterRole_shouldReturnRoleQuizmasterAuthority() {
-        // Arrange
         UserData userData = createTestUserData(UserRole.QUIZMASTER, true);
 
-        // Act
         Collection<? extends GrantedAuthority> authorities = userData.getAuthorities();
 
-        // Assert
         assertEquals(1, authorities.size());
         assertTrue(authorities.stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_QUIZMASTER")));
@@ -103,7 +87,6 @@ public class UserDataTest {
 
     @Test
     void getAuthorities_shouldAlwaysReturnSingleAuthority() {
-        // Test that only one authority is returned, regardless of role
         for (UserRole role : UserRole.values()) {
             UserData userData = new UserData(
                     createTestUserId(),
@@ -120,23 +103,17 @@ public class UserDataTest {
 
     @Test
     void getAuthorities_shouldHaveCorrectAuthorityFormat() {
-        // Arrange
         UserData userData = createTestUserData(UserRole.ADMIN, true);
 
-        // Act
         Collection<? extends GrantedAuthority> authorities = userData.getAuthorities();
 
-        // Assert
         GrantedAuthority authority = authorities.iterator().next();
         assertTrue(authority.getAuthority().startsWith("ROLE_"),
                 "Authority should start with ROLE_");
     }
 
-    // ==================== UserDetails Method Tests ====================
-
     @Test
     void getPassword_shouldReturnPassword() {
-        // Arrange
         String password = "my_encoded_password";
         UserData userData = new UserData(
                 createTestUserId(),
@@ -146,16 +123,13 @@ public class UserDataTest {
                 true
         );
 
-        // Act
         String result = userData.getPassword();
 
-        // Assert
         assertEquals(password, result);
     }
 
     @Test
     void getUsername_shouldReturnUsername() {
-        // Arrange
         String username = "testuser123";
         UserData userData = new UserData(
                 createTestUserId(),
@@ -165,10 +139,8 @@ public class UserDataTest {
                 true
         );
 
-        // Act
         String result = userData.getUsername();
 
-        // Assert
         assertEquals(username, result);
     }
 
@@ -176,97 +148,73 @@ public class UserDataTest {
 
     @Test
     void isAccountNonExpired_withActiveAccount_shouldReturnTrue() {
-        // Arrange
         UserData userData = createTestUserData(UserRole.PLAYER, true);
 
-        // Act
         boolean result = userData.isAccountNonExpired();
 
-        // Assert
         assertTrue(result);
     }
 
     @Test
     void isAccountNonExpired_withInactiveAccount_shouldReturnFalse() {
-        // Arrange
         UserData userData = createTestUserData(UserRole.PLAYER, false);
 
-        // Act
         boolean result = userData.isAccountNonExpired();
 
-        // Assert
         assertFalse(result);
     }
 
     @Test
     void isAccountNonLocked_withActiveAccount_shouldReturnTrue() {
-        // Arrange
         UserData userData = createTestUserData(UserRole.PLAYER, true);
 
-        // Act
         boolean result = userData.isAccountNonLocked();
 
-        // Assert
         assertTrue(result);
     }
 
     @Test
     void isAccountNonLocked_withInactiveAccount_shouldReturnFalse() {
-        // Arrange
         UserData userData = createTestUserData(UserRole.PLAYER, false);
 
-        // Act
         boolean result = userData.isAccountNonLocked();
 
-        // Assert
         assertFalse(result);
     }
 
     @Test
     void isCredentialsNonExpired_withActiveAccount_shouldReturnTrue() {
-        // Arrange
         UserData userData = createTestUserData(UserRole.PLAYER, true);
 
-        // Act
         boolean result = userData.isCredentialsNonExpired();
 
-        // Assert
         assertTrue(result);
     }
 
     @Test
     void isCredentialsNonExpired_withInactiveAccount_shouldReturnFalse() {
-        // Arrange
         UserData userData = createTestUserData(UserRole.PLAYER, false);
 
-        // Act
         boolean result = userData.isCredentialsNonExpired();
 
-        // Assert
         assertFalse(result);
     }
 
     @Test
     void isEnabled_withActiveAccount_shouldReturnTrue() {
-        // Arrange
         UserData userData = createTestUserData(UserRole.PLAYER, true);
 
-        // Act
         boolean result = userData.isEnabled();
 
-        // Assert
         assertTrue(result);
     }
 
     @Test
     void isEnabled_withInactiveAccount_shouldReturnFalse() {
-        // Arrange
         UserData userData = createTestUserData(UserRole.PLAYER, false);
 
-        // Act
         boolean result = userData.isEnabled();
 
-        // Assert
         assertFalse(result);
     }
 
@@ -274,10 +222,8 @@ public class UserDataTest {
 
     @Test
     void allAccountStatusMethods_withActiveAccount_shouldAllReturnTrue() {
-        // Arrange
         UserData userData = createTestUserData(UserRole.ADMIN, true);
 
-        // Act & Assert
         assertTrue(userData.isAccountNonExpired());
         assertTrue(userData.isAccountNonLocked());
         assertTrue(userData.isCredentialsNonExpired());
@@ -286,10 +232,8 @@ public class UserDataTest {
 
     @Test
     void allAccountStatusMethods_withInactiveAccount_shouldAllReturnFalse() {
-        // Arrange
         UserData userData = createTestUserData(UserRole.PLAYER, false);
 
-        // Act & Assert
         assertFalse(userData.isAccountNonExpired());
         assertFalse(userData.isAccountNonLocked());
         assertFalse(userData.isCredentialsNonExpired());
@@ -300,7 +244,6 @@ public class UserDataTest {
 
     @Test
     void userDataWithAllRoles_shouldProperlyImplementUserDetails() {
-        // Test that UserData properly implements UserDetails for all roles
         for (UserRole role : UserRole.values()) {
             UserData userData = new UserData(
                     createTestUserId(),
@@ -310,7 +253,6 @@ public class UserDataTest {
                     true
             );
 
-            // Verify UserDetails contract
             assertNotNull(userData.getAuthorities());
             assertNotNull(userData.getPassword());
             assertNotNull(userData.getUsername());
@@ -324,10 +266,8 @@ public class UserDataTest {
 
     @Test
     void userDataShouldBeSerializable() {
-        // Arrange
         UserData userData = createTestUserData(UserRole.PLAYER, true);
 
-        // Act & Assert - Basic verification that all fields are accessible
         assertNotNull(userData.getUserId());
         assertNotNull(userData.getUsername());
         assertNotNull(userData.getPassword());

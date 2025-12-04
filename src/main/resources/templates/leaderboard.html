@@ -156,30 +156,6 @@
             animation-delay: 0.2s;
         }
 
-        .podium-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            margin: 0 auto 15px;
-            border: 4px solid;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            object-fit: cover;
-        }
-
-        .podium-place:nth-child(1) .podium-avatar {
-            border-color: #ffd700;
-            width: 120px;
-            height: 120px;
-        }
-
-        .podium-place:nth-child(2) .podium-avatar {
-            border-color: #c0c0c0;
-        }
-
-        .podium-place:nth-child(3) .podium-avatar {
-            border-color: #cd7f32;
-        }
-
         .podium-rank {
             font-size: 3em;
             font-weight: bold;
@@ -241,15 +217,6 @@
             color: #667eea;
             min-width: 50px;
             text-align: center;
-        }
-
-        .item-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            border: 3px solid #667eea;
-            margin: 0 20px;
-            object-fit: cover;
         }
 
         .item-info {
@@ -403,10 +370,6 @@
                 text-align: center;
             }
 
-            .item-avatar {
-                margin: 0 0 15px 0;
-            }
-
             .item-info {
                 flex-basis: 100%;
                 order: 3;
@@ -431,13 +394,11 @@
 </head>
 <body>
 <div class="container">
-    <!-- Header -->
     <div class="header">
         <div class="logo">🎯 QuizMaster</div>
         <a href="/home" class="back-btn">Back to Home</a>
     </div>
 
-    <!-- Page Title -->
     <div class="page-title">
         <h1>
             <span class="trophy-icon">🏆</span>
@@ -447,9 +408,7 @@
         <p>Top 10 performers in the QuizMaster community</p>
     </div>
 
-    <!-- Leaderboard Card -->
     <div class="leaderboard-card">
-        <!-- Admin Controls (Only show for ADMIN users) -->
         <div class="admin-controls" th:if="${user != null and user.role.name() == 'ADMIN'}">
             <h3>
                 <span>⚙️</span>
@@ -457,10 +416,6 @@
             </h3>
             <p>Warning: These actions are irreversible. Please use with caution.</p>
             <div class="admin-buttons">
-<!--                <form th:action="@{/leaderboard/delete-all}" th:method="POST" onsubmit="return confirm('Are you sure you want to delete ALL scores? This action cannot be undone!');">-->
-<!--                    <input type="hidden" name="_method" value="DELETE">-->
-<!--                    <button type="submit" class="admin-btn btn-danger">🗑️ Delete All Scores</button>-->
-<!--                </form>-->
                 <form th:action="@{/api/scores}" method="post"
                       onsubmit="return confirm('Are you sure you want to delete ALL scores?');">
                     <input type="hidden" name="_method" value="DELETE">
@@ -469,9 +424,7 @@
             </div>
         </div>
 
-        <!-- Top 3 Podium -->
         <div class="podium" th:if="${topScores != null and topScores.size() >= 1}">
-            <!-- 1st Place -->
             <div class="podium-place">
                 <div class="podium-rank rank-1">🥇</div>
                 <img th:src="${topScores.get(0).avatarUrl}" alt="User Profile" class="profile-image" style="width: 150px; height: 150px; object-fit: cover;">
@@ -479,7 +432,6 @@
                 <div class="podium-score" th:text="${topScores.get(0).score}">12,450 pts</div>
             </div>
 
-            <!-- 2nd Place -->
             <div class="podium-place" th:if="${topScores != null and topScores.size() >= 2}">
                 <div class="podium-rank rank-2">🥈</div>
                 <img th:src="${topScores.get(1).avatarUrl}" alt="User Profile" class="profile-image" style="width: 150px; height: 150px; object-fit: cover;">
@@ -487,7 +439,6 @@
                 <div class="podium-score" th:text="${topScores.get(1).score}">12,450 pts</div>
             </div>
 
-            <!-- 3rd Place -->
             <div class="podium-place" th:if="${topScores != null and topScores.size() >= 3}">
                 <div class="podium-rank rank-3">🥉</div>
                 <img th:src="${topScores.get(2).avatarUrl}" alt="User Profile" class="profile-image" style="width: 150px; height: 150px; object-fit: cover;">
@@ -496,11 +447,9 @@
             </div>
         </div>
 
-        <!-- Rest of the list (4th place and below) -->
         <div class="leaderboard-list" th:if="${topScores != null and topScores.size() > 3}">
             <h2>Complete Rankings</h2>
 
-            <!-- Sample item - use th:each to iterate -->
             <div class="leaderboard-item" th:each="score, index : ${scoresAfterTopThree}">
                 <div class="item-rank" th:text="${index.index  + 4}">4</div>
                 <img th:src="${score.avatarUrl}" alt="User Profile" class="profile-image" style="width: 150px; height: 150px; object-fit: cover;">
@@ -510,12 +459,7 @@
                 </div>
                 <div class="item-score" th:text="${score.score}">8,540</div>
 
-                <!-- Delete button (only for ADMIN) -->
                 <div class="item-actions" th:if="${user != null and user.role.name() == 'ADMIN'}">
-<!--                    <form th:action="@{/leaderboard/delete/{id}(id=${score.id})}" th:method="POST" onsubmit="return confirm('Are you sure you want to remove this user?');">-->
-<!--                        <input type="hidden" name="_method" value="DELETE">-->
-<!--                        <button type="submit" class="item-delete-btn">Delete</button>-->
-<!--                    </form>-->
                     <form th:action="@{/api/scores/{id}(id=${score.id})}" method="post"
                           onsubmit="return confirm('Are you sure you want to remove this user?');">
                         <input type="hidden" name="_method" value="DELETE">
@@ -525,7 +469,6 @@
             </div>
         </div>
 
-        <!-- Empty State -->
         <div class="empty-state" th:if="${topScores == null or topScores.size() == 0}">
             <div class="empty-state-icon">📊</div>
             <h3>No Scores Yet</h3>

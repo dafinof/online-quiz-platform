@@ -275,7 +275,6 @@
 </head>
 <body>
 <div class="container">
-    <!-- Header -->
     <div class="header">
         <div class="logo">🎯 QuizMaster</div>
         <div class="header-buttons">
@@ -284,7 +283,6 @@
         </div>
     </div>
 
-    <!-- Profile Card -->
     <div class="profile-card">
         <img th:src="${user.avatarUrl}" alt="User Profile" class="profile-image">
         <h1 th:text="${user.username}" class="username">JohnDoe123</h1>
@@ -315,7 +313,6 @@
         <p>See how you stack up against other players and check out the top performers in the QuizMaster community.</p>
         <a href="/leaderboard" class="quiz-btn">View Leaderboard</a>
     </div>
-    <!-- Action Section -->
     <div class="action-section">
         <h2>Ready for Your Next Challenge?</h2>
         <p>Test your knowledge with our wide variety of quizzes across multiple categories and difficulty levels.</p>
@@ -323,14 +320,12 @@
     </div>
 
 
-    <!-- Creation Section -->
     <div th:if="${user.role == user.role.QUIZMASTER or user.role == user.role.ADMIN}" class="action-section" style="margin-top: 30px;">
         <h2>Ready To Create The Next Challenge?</h2>
         <p>Prove you are a true master and create a new quiz.</p>
         <a href="/new-quiz" class="quiz-btn">Create Quiz</a>
     </div>
 
-    <!-- Recent Activity -->
     <div class="recent-activity">
         <h3>Recent Activity</h3>
         <div class="activity-item" th:each="quiz : ${quizzes}">

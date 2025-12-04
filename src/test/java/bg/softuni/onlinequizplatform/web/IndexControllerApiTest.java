@@ -3,16 +3,10 @@ package bg.softuni.onlinequizplatform.web;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 
 import bg.softuni.onlinequizplatform.service.UserService;
-import bg.softuni.onlinequizplatform.web.dto.RegisterRequest;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.never;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -47,5 +41,4 @@ public class IndexControllerApiTest {
                 .andExpect(view().name("register"))
                 .andExpect(model().attributeExists("registerRequest"));
     }
-
 }

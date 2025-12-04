@@ -4,7 +4,6 @@ import bg.softuni.onlinequizplatform.model.QuestionOption;
 import bg.softuni.onlinequizplatform.repository.QuestionOptionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -28,22 +27,18 @@ public class QuestionOptionServiceUTest {
 
     @Test
     void save_shouldCallRepositorySave() {
-        // Arrange
         QuestionOption option = QuestionOption.builder()
                 .text("Option A")
                 .isCorrect(true)
                 .build();
 
-        // Act
         questionOptionService.save(option);
 
-        // Assert
         verify(questionOptionRepository, times(1)).save(option);
     }
 
     @Test
     void getAllOptions_shouldReturnAllOptions() {
-        // Arrange
         List<QuestionOption> expected = Arrays.asList(
                 QuestionOption.builder().text("A").build(),
                 QuestionOption.builder().text("B").build()
@@ -51,10 +46,8 @@ public class QuestionOptionServiceUTest {
 
         when(questionOptionRepository.findAll()).thenReturn(expected);
 
-        // Act
         List<QuestionOption> result = questionOptionService.getAllOptions();
 
-        // Assert
         assertEquals(2, result.size());
         assertEquals(expected, result);
         verify(questionOptionRepository, times(1)).findAll();
@@ -62,15 +55,12 @@ public class QuestionOptionServiceUTest {
 
     @Test
     void deleteQuestionOption_shouldCallRepositoryDelete() {
-        // Arrange
         QuestionOption option = QuestionOption.builder()
                 .text("Option X")
                 .build();
 
-        // Act
         questionOptionService.deleteQuestionOption(option);
 
-        // Assert
         verify(questionOptionRepository, times(1)).delete(option);
     }
 }

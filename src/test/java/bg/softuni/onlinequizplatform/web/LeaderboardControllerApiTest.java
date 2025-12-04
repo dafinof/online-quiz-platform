@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -37,7 +36,6 @@ public class LeaderboardControllerApiTest {
     @Autowired
     private MockMvc mockMvc;
 
-    // Test data
     private User createTestUser() {
         return User.builder()
                 .id(UUID.randomUUID())
@@ -75,11 +73,8 @@ public class LeaderboardControllerApiTest {
                 .build();
     }
 
-    // ==================== GET /leaderboard Tests ====================
-
     @Test
     void showLeaderboard_withAuthenticatedUser_shouldReturn200OkAndLeaderboardView() throws Exception {
-        // Arrange
         UUID userId = UUID.randomUUID();
         User testUser = createTestUser();
         UserData userData = createTestUserData(userId, "testuser", UserRole.PLAYER);
@@ -96,7 +91,6 @@ public class LeaderboardControllerApiTest {
         when(userService.getById(userId)).thenReturn(testUser);
         when(userService.getScoresAfterTopThree(topScores)).thenReturn(scoresAfterTopThree);
 
-        // Act & Assert
         mockMvc.perform(get("/leaderboard").with(user(userData)))
                 .andExpect(status().isOk())
                 .andExpect(view().name("leaderboard"))
@@ -112,7 +106,6 @@ public class LeaderboardControllerApiTest {
 
     @Test
     void showLeaderboard_withEmptyLeaderboard_shouldReturn200OkWithEmptyLists() throws Exception {
-        // Arrange
         UUID userId = UUID.randomUUID();
         User testUser = createTestUser();
         UserData userData = createTestUserData(userId, "testuser", UserRole.PLAYER);
@@ -124,7 +117,6 @@ public class LeaderboardControllerApiTest {
         when(userService.getById(userId)).thenReturn(testUser);
         when(userService.getScoresAfterTopThree(emptyTopScores)).thenReturn(emptyScoresAfterTopThree);
 
-        // Act & Assert
         mockMvc.perform(get("/leaderboard").with(user(userData)))
                 .andExpect(status().isOk())
                 .andExpect(view().name("leaderboard"))
@@ -138,7 +130,6 @@ public class LeaderboardControllerApiTest {
 
     @Test
     void showLeaderboard_withOnlyTopThreeScores_shouldReturn200OkWithEmptyScoresAfterTopThree() throws Exception {
-        // Arrange
         UUID userId = UUID.randomUUID();
         User testUser = createTestUser();
         UserData userData = createTestUserData(userId, "testuser", UserRole.PLAYER);
@@ -154,7 +145,6 @@ public class LeaderboardControllerApiTest {
         when(userService.getById(userId)).thenReturn(testUser);
         when(userService.getScoresAfterTopThree(topScores)).thenReturn(scoresAfterTopThree);
 
-        // Act & Assert
         mockMvc.perform(get("/leaderboard").with(user(userData)))
                 .andExpect(status().isOk())
                 .andExpect(view().name("leaderboard"))
@@ -178,7 +168,6 @@ public class LeaderboardControllerApiTest {
         MockHttpServletRequestBuilder httpRequest = delete("/api/scores")
                 .with(csrf());
 
-        // Act & Assert
         mockMvc.perform(httpRequest)
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/leaderboard"));
@@ -204,7 +193,6 @@ public class LeaderboardControllerApiTest {
         MockHttpServletRequestBuilder httpRequest = delete("/api/scores/{id}", scoreId)
                 .with(csrf());
 
-        // Act & Assert
         mockMvc.perform(httpRequest)
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/leaderboard"));
@@ -218,7 +206,6 @@ public class LeaderboardControllerApiTest {
         UUID scoreId1 = UUID.randomUUID();
         UUID scoreId2 = UUID.randomUUID();
 
-        // Delete first score
         mockMvc.perform(delete("/api/scores/{id}", scoreId1).with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/leaderboard"));

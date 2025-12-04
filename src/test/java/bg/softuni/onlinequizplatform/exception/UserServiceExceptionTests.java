@@ -2,14 +2,12 @@ package bg.softuni.onlinequizplatform.exception;
 
 import bg.softuni.onlinequizplatform.model.User;
 import bg.softuni.onlinequizplatform.repository.UserRepository;
-import bg.softuni.onlinequizplatform.service.QuizService;
 import bg.softuni.onlinequizplatform.service.UserService;
 import bg.softuni.onlinequizplatform.web.dto.RegisterRequest;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -21,12 +19,6 @@ public class UserServiceExceptionTests {
 
     @Mock
     private UserRepository userRepository;
-
-    @Mock
-    private PasswordEncoder passwordEncoder;
-
-    @Mock
-    private QuizService quizService;
 
     @InjectMocks
     private UserService userService;

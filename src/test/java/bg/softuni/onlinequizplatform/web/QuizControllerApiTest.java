@@ -43,7 +43,6 @@ public class QuizControllerApiTest {
     @Autowired
     private MockMvc mockMvc;
 
-    // Test data
     private User createTestUser() {
         return User.builder()
                 .id(UUID.randomUUID())
@@ -115,11 +114,8 @@ public class QuizControllerApiTest {
                 .build();
     }
 
-    // ==================== GET /quizzes Tests ====================
-
     @Test
     void getQuizzesPage_withAuthenticatedUser_shouldReturn200OkAndQuizzesView() throws Exception {
-        // Arrange
         User testUser = createTestUser();
         UserData userData = createTestUserData(testUser.getId(), "testuser", UserRole.PLAYER);
 
@@ -136,7 +132,6 @@ public class QuizControllerApiTest {
         when(quizService.getAllQuizzesByCategory(Category.HISTORY)).thenReturn(historyQuizzes);
         when(quizService.getAllQuizzesByCategory(Category.MUSIC)).thenReturn(musicQuizzes);
 
-        // Act & Assert
         mockMvc.perform(get("/quizzes").with(user(userData)))
                 .andExpect(status().isOk())
                 .andExpect(view().name("quizzes"))
@@ -154,7 +149,6 @@ public class QuizControllerApiTest {
 
     @Test
     void getQuizzesPage_withEmptyQuizzes_shouldReturn200OkWithEmptyLists() throws Exception {
-        // Arrange
         User testUser = createTestUser();
         UserData userData = createTestUserData(testUser.getId(), "testuser", UserRole.PLAYER);
 
@@ -163,7 +157,6 @@ public class QuizControllerApiTest {
         when(quizService.getAllQuizzesByCategory(Category.HISTORY)).thenReturn(List.of());
         when(quizService.getAllQuizzesByCategory(Category.MUSIC)).thenReturn(List.of());
 
-        // Act & Assert
         mockMvc.perform(get("/quizzes").with(user(userData)))
                 .andExpect(status().isOk())
                 .andExpect(view().name("quizzes"))
@@ -182,8 +175,6 @@ public class QuizControllerApiTest {
         verifyNoInteractions(quizService);
         verifyNoInteractions(userService);
     }
-
-    // ==================== GET /new-quiz Tests ====================
 
     @Test
     @WithMockUser(roles = "ADMIN")
@@ -215,8 +206,6 @@ public class QuizControllerApiTest {
         verifyNoInteractions(quizService);
     }
 
-    // ==================== POST /new-quiz Tests ====================
-
     @Test
     @WithMockUser(roles = "ADMIN")
     void postNewQuiz_withAdminRoleAndValidData_shouldReturn3xxRedirectToQuizzesAndInvokeCreateService() throws Exception {
@@ -228,7 +217,6 @@ public class QuizControllerApiTest {
                 .param("category", "GEOGRAPHY")
                 .param("score", "100");
 
-        // Act & Assert
         mockMvc.perform(httpRequest)
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/quizzes"));
@@ -247,7 +235,6 @@ public class QuizControllerApiTest {
                 .param("category", "MUSIC")
                 .param("score", "150");
 
-        // Act & Assert
         mockMvc.perform(httpRequest)
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/quizzes"));
@@ -266,7 +253,6 @@ public class QuizControllerApiTest {
                 .param("category", "GEOGRAPHY")
                 .param("score", "-10");  // Invalid: negative
 
-        // Act & Assert
         mockMvc.perform(httpRequest)
                 .andExpect(status().isOk())
                 .andExpect(view().name("new-quiz"));
@@ -276,7 +262,6 @@ public class QuizControllerApiTest {
 
     @Test
     void getQuizPage_withAuthenticatedUserAndValidId_shouldReturn200OkAndQuizView() throws Exception {
-        // Arrange
         User testUser = createTestUser();
         UserData userData = createTestUserData(testUser.getId(), "testuser", UserRole.PLAYER);
         UUID quizId = UUID.randomUUID();
@@ -287,7 +272,6 @@ public class QuizControllerApiTest {
         when(quizService.getById(quizId)).thenReturn(Optional.of(testQuiz));
         when(dtoMapperQuiz.fromQuizToNewQuizRequest(testQuiz)).thenReturn(newQuizRequest);
 
-        // Act & Assert
         mockMvc.perform(get("/quiz/{id}", quizId).with(user(userData)))
                 .andExpect(status().isOk())
                 .andExpect(view().name("quiz"))
@@ -300,7 +284,6 @@ public class QuizControllerApiTest {
 
     @Test
     void getQuizPage_withoutAuthentication_shouldReturn302RedirectToLogin() throws Exception {
-        // Quiz page requires authentication - unauthenticated requests redirect to login
         UUID quizId = UUID.randomUUID();
 
         mockMvc.perform(get("/quiz/{id}", quizId))
@@ -354,7 +337,6 @@ public class QuizControllerApiTest {
 
     @Test
     void submitQuiz_withAuthenticatedUserAndZeroScore_shouldReturn3xxRedirectAndUpdateWithZeroScore() throws Exception {
-        // Arrange
         UUID userId = UUID.randomUUID();
         User testUser = createTestUser();
         testUser.setId(userId);
@@ -373,7 +355,6 @@ public class QuizControllerApiTest {
                 .param("category", quizRequest.getCategory().toString())
                 .param("score", String.valueOf(quizRequest.getScore()));
 
-        // Act & Assert
         mockMvc.perform(httpRequest)
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/quizzes"));

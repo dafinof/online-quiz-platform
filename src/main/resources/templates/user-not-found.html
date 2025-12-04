@@ -86,14 +86,6 @@
             line-height: 1.6;
         }
 
-        .error-details {
-            background: #f9f9f9;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            border-left: 4px solid #667eea;
-        }
-
         .error-details p {
             color: #666;
             font-size: 0.95em;
@@ -198,12 +190,6 @@
             Oops! We couldn't find the user you're looking for. The user may have been deleted,
             or the username might be incorrect.
         </p>
-
-        <!-- Optional: Show specific error details with Thymeleaf -->
-<!--        <div class="error-details" th:if="${username}">-->
-<!--            <p><strong>Username:</strong> <span th:text="${username}">username</span></p>-->
-<!--            <p th:if="${errorMessage}" th:text="${errorMessage}">Additional error information</p>-->
-<!--        </div>-->
 
         <div class="action-buttons">
             <a href="/home" class="btn btn-primary">Go to Home</a>

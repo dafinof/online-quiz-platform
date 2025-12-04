@@ -2,8 +2,6 @@ package bg.softuni.onlinequizplatform.service;
 
 import bg.softuni.onlinequizplatform.client.LeaderboardClient;
 import bg.softuni.onlinequizplatform.model.*;
-import bg.softuni.onlinequizplatform.repository.QuestionOptionRepository;
-import bg.softuni.onlinequizplatform.repository.QuestionRepository;
 import bg.softuni.onlinequizplatform.repository.QuizRepository;
 import bg.softuni.onlinequizplatform.web.dto.CreateScoreRequest;
 import bg.softuni.onlinequizplatform.web.dto.NewQuizRequest;
@@ -27,22 +25,10 @@ public class QuizServiceUTest {
     private QuizRepository quizRepository;
 
     @Mock
-    private QuestionRepository questionRepository;
-
-    @Mock
-    private QuestionOptionRepository questionOptionRepository;
-
-    @Mock
     private LeaderboardClient leaderboardClient;
 
     @InjectMocks
     private QuizService quizService;
-
-    @InjectMocks
-    private QuestionService questionService;
-
-    @InjectMocks
-    private QuestionOptionService questionOptionService;
 
     @Test
     void getById_WhenNoSuchId_thenReturnsEmptyOptional() {
@@ -95,9 +81,9 @@ public class QuizServiceUTest {
 
         quizService.createNewQuiz(req);
 
-        verify(quizRepository, times(2)).save(any(Quiz.class)); // before and after questions
-        verify(questionService, times(2)).save(any(Question.class)); // once inside loop + second save
-        verify(questionOptionService, times(2)).save(any(QuestionOption.class)); // 2 options
+        verify(quizRepository, times(2)).save(any(Quiz.class));
+        verify(questionService, times(2)).save(any(Question.class));
+        verify(questionOptionService, times(2)).save(any(QuestionOption.class));
     }
 
     @Test

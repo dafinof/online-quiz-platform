@@ -38,7 +38,6 @@ public class UserControllerApiTest {
     @Autowired
     private MockMvc mockMvc;
 
-    // Test data
     private User createTestUser() {
         return User.builder()
                 .id(UUID.randomUUID())
@@ -76,7 +75,6 @@ public class UserControllerApiTest {
 
     @Test
     void getHomePage_withAuthenticatedUser_shouldReturn200OkAndHomeView() throws Exception {
-        // Arrange
         User testUser = createTestUser();
         UserData userData = createTestUserData();
         List<Quiz> quizzes = List.of(createTestQuiz());
@@ -85,7 +83,6 @@ public class UserControllerApiTest {
         when(userService.getAverageSuccessPercent(testUser)).thenReturn(50);
         when(quizService.getAllQuizzesByUser(testUser.getId())).thenReturn(quizzes);
 
-        // Act & Assert
         mockMvc.perform(get("/home").with(user(userData)))
                 .andExpect(status().isOk())
                 .andExpect(view().name("home"))
@@ -111,7 +108,6 @@ public class UserControllerApiTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void getUsersPage_withAdminRole_shouldReturn200OkAndUsersView() throws Exception {
-        // Arrange
         List<User> allUsers = List.of(createTestUser());
         List<User> players = List.of(createTestUser());
         List<User> admins = List.of();
@@ -122,7 +118,6 @@ public class UserControllerApiTest {
         when(userService.getUsersByRole(UserRole.ADMIN)).thenReturn(admins);
         when(userService.getUsersByRole(UserRole.QUIZMASTER)).thenReturn(quizmasters);
 
-        // Act & Assert
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("users"))
@@ -147,12 +142,10 @@ public class UserControllerApiTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void editUserPage_withAdminRole_shouldReturn200OkAndEditUserView() throws Exception {
-        // Arrange
         User testUser = createTestUser();
 
         when(userService.getByUsername("testuser")).thenReturn(testUser);
 
-        // Act & Assert
         mockMvc.perform(get("/users/edit/testuser"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("edit-user"))
@@ -164,7 +157,6 @@ public class UserControllerApiTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void editUser_withAdminRoleAndValidData_shouldReturn3xxRedirectToUsersAndInvokeUpdateService() throws Exception {
-        // Arrange
         User testUser = createTestUser();
 
         when(userService.getByUsername("testuser")).thenReturn(testUser);
@@ -180,7 +172,6 @@ public class UserControllerApiTest {
                 .formField("active", "true")
                 .formField("newPassword", "");
 
-        // Act & Assert
         mockMvc.perform(httpRequest)
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/users"));
@@ -192,7 +183,6 @@ public class UserControllerApiTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void editUser_withAdminRoleAndInvalidData_shouldReturn200OkAndEditUserView() throws Exception {
-        // Arrange
         User testUser = createTestUser();
 
         when(userService.getByUsername("testuser")).thenReturn(testUser);
@@ -205,7 +195,6 @@ public class UserControllerApiTest {
                 .formField("score", "-10")  // Invalid: negative score
                 .formField("role", "PLAYER");
 
-        // Act & Assert
         mockMvc.perform(httpRequest)
                 .andExpect(status().isOk())
                 .andExpect(view().name("edit-user"));
@@ -214,23 +203,9 @@ public class UserControllerApiTest {
         verify(userService, never()).updateUserProfile(anyString(), any());
     }
 
-//    @Test
-//    @WithMockUser(roles = "PLAYER")
-//    void editUser_withPlayerRole_shouldReturn403Forbidden() throws Exception {
-//        mockMvc.perform(put("/users/edit/testuser")
-//                        .with(csrf())
-//                        .formField("username", "updateduser"))
-//                .andExpect(status().isForbidden());
-//
-//        verifyNoInteractions(userService);
-//    }
-
-    // ==================== POST /users/delete/{username} Tests ====================
-
     @Test
     @WithMockUser(roles = "ADMIN")
     void deleteUser_withAdminRole_shouldReturn3xxRedirectToUsersAndInvokeDeleteService() throws Exception {
-        // Act & Assert
         mockMvc.perform(post("/users/delete/testuser")
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
@@ -238,16 +213,6 @@ public class UserControllerApiTest {
 
         verify(userService).deleteUser("testuser");
     }
-
-//    @Test
-//    @WithMockUser(roles = "PLAYER")
-//    void deleteUser_withPlayerRole_shouldReturn403Forbidden() throws Exception {
-//        mockMvc.perform(post("/users/delete/testuser")
-//                        .with(csrf()))
-//                .andExpect(status().isForbidden());
-//
-//        verifyNoInteractions(userService);
-//    }
 
     @Test
     void deleteUser_withoutAuthentication_shouldReturn302RedirectToLogin() throws Exception {
@@ -257,17 +222,13 @@ public class UserControllerApiTest {
         verifyNoInteractions(userService);
     }
 
-    // ==================== GET /edit-profile Tests ====================
-
     @Test
     void editProfilePage_withAuthenticatedUser_shouldReturn200OkAndEditProfileView() throws Exception {
-        // Arrange
         User testUser = createTestUser();
         UserData userData = createTestUserData();
 
         when(userService.getByUsername("testuser")).thenReturn(testUser);
 
-        // Act & Assert
         mockMvc.perform(get("/edit-profile").with(user(userData)))
                 .andExpect(status().isOk())
                 .andExpect(view().name("edit-profile"))
@@ -284,11 +245,8 @@ public class UserControllerApiTest {
         verifyNoInteractions(userService);
     }
 
-    // ==================== PUT /edit-profile Tests ====================
-
     @Test
     void editProfile_withValidData_shouldReturn3xxRedirectToHomeAndInvokeUpdateService() throws Exception {
-        // Arrange
         User testUser = createTestUser();
         UserData userData = createTestUserData();
 
@@ -305,7 +263,6 @@ public class UserControllerApiTest {
                 .formField("score", "150")
                 .formField("level", "2");
 
-        // Act & Assert
         mockMvc.perform(httpRequest)
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/home"));
@@ -316,7 +273,6 @@ public class UserControllerApiTest {
 
     @Test
     void editProfile_withInvalidData_shouldReturn200OkAndEditProfileView() throws Exception {
-        // Arrange
         User testUser = createTestUser();
         UserData userData = createTestUserData();
 
@@ -325,13 +281,12 @@ public class UserControllerApiTest {
         MockHttpServletRequestBuilder httpRequest = put("/edit-profile")
                 .with(user(userData))
                 .with(csrf())
-                .formField("username", "")  // Invalid: blank
-                .formField("email", "invalid-email")  // Invalid email
-                .formField("avatarUrl", "invalid-url")  // Invalid URL
+                .formField("username", "")
+                .formField("email", "invalid-email")
+                .formField("avatarUrl", "invalid-url")
                 .formField("password", "")
                 .formField("newPassword", "");
 
-        // Act & Assert
         mockMvc.perform(httpRequest)
                 .andExpect(status().isOk())
                 .andExpect(view().name("edit-profile"));

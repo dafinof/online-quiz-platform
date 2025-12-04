@@ -268,29 +268,6 @@
             transform: translateY(-2px);
         }
 
-        .role-badge {
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.85em;
-            font-weight: 600;
-            display: inline-block;
-        }
-
-        .role-badge.admin {
-            background: #f44336;
-            color: white;
-        }
-
-        .role-badge.player {
-            background: #4caf50;
-            color: white;
-        }
-
-        .role-badge.quizmaster {
-            background: #ff9800;
-            color: white;
-        }
-
         @media (max-width: 768px) {
             .header {
                 flex-direction: column;
@@ -323,21 +300,17 @@
 </head>
 <body>
 <div class="container">
-    <!-- Header -->
     <div class="header">
         <div class="logo">🎯 QuizMaster</div>
         <a href="/users" class="back-btn">Back to Users</a>
     </div>
 
-    <!-- Page Title -->
     <div class="page-title">
         <h1>Edit User</h1>
         <p>Update user information and permissions</p>
     </div>
 
-    <!-- Form Container -->
     <div class="form-container">
-        <!-- User Preview -->
         <div class="user-preview">
             <img th:src="${user.avatarUrl}" alt="User Avatar" class="preview-avatar">
             <div class="preview-info">
@@ -352,12 +325,9 @@
             </div>
         </div>
 
-        <!-- Edit Form -->
         <form th:method="PUT" th:action="@{'/users/edit/' + ${editUserRequest.username}}" th:object="${editUserRequest}">
-            <!-- Hidden field for user ID -->
             <input type="hidden" name="id" value="">
 
-            <!-- Account Information -->
             <div class="form-section">
                 <h2>👤 Account Information</h2>
 
@@ -388,7 +358,6 @@
                 </div>
             </div>
 
-            <!-- Role & Status -->
             <div class="form-section">
                 <h2>🔐 Role & Status</h2>
 
@@ -402,20 +371,6 @@
                         </select>
                         <p class="hint-text">User's permission level</p>
                     </div>
-
-<!--                    <div class="form-group">-->
-<!--                        <label for="role">User Role *</label>-->
-<!--                        <select id="role" name="role" th:field="*{role}" required>-->
-<!--                            <option value="" disabled>Select a role</option>-->
-<!--                            <option th:each="r : ${T(bg.softuni.onlinequizplatform.model.UserRole).values()}"-->
-<!--                                    th:value="${r}"-->
-<!--                                    th:text="${#strings.capitalize(r.name().toLowerCase())}"-->
-<!--                                    th:selected="${r} == *{role}">-->
-<!--                            </option>-->
-<!--                        </select>-->
-<!--                        <p class="hint-text">User's permission level</p>-->
-<!--                    </div>-->
-
                     <div class="form-group">
                         <label style="margin-bottom: 20px;">Account Status</label>
                         <div class="checkbox-group">
@@ -427,7 +382,6 @@
                 </div>
             </div>
 
-            <!-- Game Statistics -->
             <div class="form-section">
                 <h2>📊 Game Statistics</h2>
 
@@ -446,7 +400,6 @@
                 </div>
             </div>
 
-            <!-- Form Actions -->
             <div class="form-actions">
                 <a href="/users" class="cancel-btn">Cancel</a>
                 <button type="submit" class="submit-btn">Save Changes</button>

@@ -16,11 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -65,9 +60,6 @@ public class UserServiceUTest {
                 .build();
     }
 
-    // ==========================================================
-    // loadUserByUsername()
-    // ==========================================================
     @Test
     void loadUserByUsername_ShouldReturnUser() {
         when(userRepository.findByUsername("testuser"))
@@ -88,9 +80,6 @@ public class UserServiceUTest {
                 () -> service.loadUserByUsername("missing"));
     }
 
-    // ==========================================================
-    // register()
-    // ==========================================================
     @Test
     void register_ShouldCreateUser_WhenValid() {
         RegisterRequest req = RegisterRequest.builder()
@@ -138,9 +127,6 @@ public class UserServiceUTest {
         assertThrows(PasswordMismatchException.class, () -> service.register(req));
     }
 
-    // ==========================================================
-    // getByUsername()
-    // ==========================================================
     @Test
     void getByUsername_ShouldReturnUser() {
         when(userRepository.findByUsername("testuser"))
@@ -159,9 +145,6 @@ public class UserServiceUTest {
         assertThrows(UserNotFoundException.class, () -> service.getByUsername("missing"));
     }
 
-    // ==========================================================
-    // getById()
-    // ==========================================================
     @Test
     void getById_ShouldReturnUser() {
         when(userRepository.findById(testUser.getId()))
@@ -181,9 +164,6 @@ public class UserServiceUTest {
         assertThrows(UserNotFoundException.class, () -> service.getById(missingId));
     }
 
-    // ==========================================================
-    // deleteUser()
-    // ==========================================================
     @Test
     void deleteUser_ShouldDelete() {
         when(userRepository.findByUsername("testuser"))
@@ -194,9 +174,6 @@ public class UserServiceUTest {
         verify(userRepository).delete(testUser);
     }
 
-    // ==========================================================
-    // getAverageSuccessPercent()
-    // ==========================================================
     @Test
     void getAverageSuccessPercent_ShouldReturnZero_WhenNoQuizzes() {
         when(quizService.getAllQuizzesByUser(testUser.getId()))
@@ -220,9 +197,6 @@ public class UserServiceUTest {
         assertEquals(200 / (2 * 2), result); // score / (quizCount * 2)
     }
 
-    // ==========================================================
-    // setNewScore()
-    // ==========================================================
     @Test
     void setNewScore_ShouldIncreaseScore_AndSave() {
         testUser.setScore(500);
@@ -247,9 +221,6 @@ public class UserServiceUTest {
         assertEquals(UserRole.QUIZMASTER, testUser.getRole());
     }
 
-    // ==========================================================
-    // getUsersByRole()
-    // ==========================================================
     @Test
     void getUsersByRole_ShouldReturnList() {
         when(userRepository.findByRole(UserRole.PLAYER))
@@ -260,9 +231,6 @@ public class UserServiceUTest {
         assertEquals(1, result.size());
     }
 
-    // ==========================================================
-    // getScoresAfterTopThree()
-    // ==========================================================
     @Test
     void getScoresAfterTopThree_ShouldReturnAll_WhenLessThanFour() {
         List<UserScoreResponse> list = List.of(
@@ -288,6 +256,4 @@ public class UserServiceUTest {
 
         assertEquals(2, result.size());
     }
-
-
 }

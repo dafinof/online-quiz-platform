@@ -74,36 +74,10 @@
             font-size: 0.95em;
         }
 
-        .progress-section {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .progress-info {
-            text-align: right;
-            min-width: 100px;
-        }
-
         .progress-info p {
             color: #667eea;
             font-weight: 600;
             font-size: 1.1em;
-        }
-
-        .progress-bar {
-            width: 150px;
-            height: 8px;
-            background: #e0e0e0;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            width: 0%;
-            transition: width 0.3s ease;
         }
 
         .quiz-content {
@@ -236,21 +210,6 @@
             transform: translateY(-2px);
         }
 
-        .timer {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 20px;
-            background: linear-gradient(135deg, #ff9800 0%, #e68900 100%);
-            color: white;
-            border-radius: 25px;
-            font-weight: 600;
-        }
-
-        .timer.warning {
-            background: linear-gradient(135deg, #f44336 0%, #da190b 100%);
-        }
-
         @media (max-width: 768px) {
             .header {
                 flex-direction: column;
@@ -261,15 +220,6 @@
             .header-quiz {
                 flex-direction: column;
                 gap: 15px;
-            }
-
-            .progress-section {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .progress-info {
-                text-align: center;
             }
 
             .quiz-title h2 {
@@ -426,25 +376,20 @@
         }
     }
 
-    // This function should now be correctly recognized and executed
     function selectOnlyOne(questionIndex, selectedOptionIndex) {
-        // 1. Get the container for the current question
         const questionSection = document.querySelector(`.question-section[data-question-index="${questionIndex}"]`);
 
         if (!questionSection) return;
 
-        // 2. Find ALL hidden 'isSelected' fields for this question and reset them to 'false'
         const allIsSelectedFields = questionSection.querySelectorAll('input[type="hidden"][name$=".isSelected"]');
         allIsSelectedFields.forEach(field => {
             field.value = 'false';
         });
 
-        // 3. Find the hidden 'isSelected' field for the selected option and set it to 'on'
         const selectedFieldId = 'is_selected_q' + questionIndex + '_opt' + selectedOptionIndex;
         const selectedField = document.getElementById(selectedFieldId);
 
         if (selectedField) {
-            // Setting value to 'on' for Spring binder to recognize 'true'
             selectedField.value = 'on';
         }
     }

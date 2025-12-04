@@ -307,13 +307,6 @@
             transform: translateY(-2px);
         }
 
-        .hint-text {
-            font-size: 0.9em;
-            color: #666;
-            margin-top: 5px;
-            font-style: italic;
-        }
-
         @media (max-width: 768px) {
             .header {
                 flex-direction: column;
@@ -459,25 +452,18 @@
 <script>
     let questionIndex = 1;
 
-    // New function to handle checkbox state
     window.handleCheckboxChange = function(checkbox) {
-        // Find the corresponding hidden input (we added a class 'hidden-correct-input')
         const optionGroup = checkbox.closest('.option-group');
         const hiddenInput = optionGroup.querySelector('.hidden-correct-input');
 
         if (hiddenInput) {
-            // If the checkbox is checked, DISABLE the hidden input.
-            // Only the 'true' from the checkbox will be sent.
             hiddenInput.disabled = checkbox.checked;
         }
     };
 
-    // Initialize listeners for the static checkboxes
     document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.option-correct').forEach(checkbox => {
-            // Apply the change listener
             checkbox.addEventListener('change', () => handleCheckboxChange(checkbox));
-            // Apply the initial state (in case of validation failure/pre-fill)
             handleCheckboxChange(checkbox);
         });
     });
@@ -527,7 +513,6 @@
         questionCard.innerHTML = newQuestionHtml;
         container.appendChild(questionCard);
 
-        // ADD: Initialize event listeners for the new question's checkboxes
         questionCard.querySelectorAll('.option-correct').forEach(checkbox => {
             checkbox.addEventListener('change', () => handleCheckboxChange(checkbox));
         });
@@ -556,7 +541,6 @@
 
         optionsContainer.appendChild(optionGroup);
 
-        // ADD: Initialize event listener for the new option's checkbox
         const newCheckbox = optionGroup.querySelector('.option-correct');
         if (newCheckbox) {
             newCheckbox.addEventListener('change', () => handleCheckboxChange(newCheckbox));
@@ -597,13 +581,11 @@
             card.setAttribute('data-index', index);
             card.querySelector('.question-number').textContent = `Question ${index + 1}`;
 
-            // Update question name field
             const questionTextarea = card.querySelector('textarea');
             if (questionTextarea) {
                 questionTextarea.name = `questions[${index}].name`;
             }
 
-            // Update all option fields
             const optionsContainer = card.querySelector('.options-container');
             if (optionsContainer) {
                 reindexOptions(optionsContainer, index);
@@ -625,11 +607,9 @@
 
             const textInput = option.querySelector('input[type="text"]');
 
-            // Find inputs for isCorrect (using the new class)
             const hiddenCorrect = option.querySelector('.hidden-correct-input');
             const checkboxCorrect = option.querySelector('.option-correct');
 
-            // Find input for isSelected
             const hiddenSelected = option.querySelector('input[name*="isSelected"]');
 
 
@@ -638,18 +618,15 @@
                 textInput.placeholder = `Option ${optionIndex + 1}`;
             }
 
-            // Re-index isCorrect inputs
             if (hiddenCorrect && checkboxCorrect) {
                 hiddenCorrect.name = `questions[${questionIdx}].options[${optionIndex}].isCorrect`;
                 checkboxCorrect.name = `questions[${questionIdx}].options[${optionIndex}].isCorrect`;
             }
 
-            // Re-index isSelected input
             if (hiddenSelected) {
                 hiddenSelected.name = `questions[${questionIdx}].options[${optionIndex}].isSelected`;
             }
 
-            // Re-run the change handler to update the disabled state in case of re-indexing
             if (checkboxCorrect) {
                 handleCheckboxChange(checkboxCorrect);
             }

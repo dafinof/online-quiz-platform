@@ -27,7 +27,6 @@ public class DailyBonusSchedulerTest {
     @InjectMocks
     private DailyBonusScheduler dailyBonusScheduler;
 
-    // Test data
     private User createTestUser(UUID id, int score, UserRole role, LocalDateTime updatedOn) {
         return User.builder()
                 .id(id)
@@ -44,18 +43,13 @@ public class DailyBonusSchedulerTest {
                 .build();
     }
 
-    // ==================== Daily Bonus Tests ====================
-
     @Test
     void giveDailyBonusToActiveUsers_withActiveUserUpdatedWithinPastDay_shouldAddBonusPoints() {
-        // Arrange
         User activeUser = createTestUser(UUID.randomUUID(), 100, UserRole.PLAYER, LocalDateTime.now().minusHours(12));
         when(userService.getAllUsers()).thenReturn(List.of(activeUser));
 
-        // Act
         dailyBonusScheduler.giveDailyBonusToActiveUsers();
 
-        // Assert
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         verify(userService).save(userCaptor.capture());
 
@@ -66,17 +60,14 @@ public class DailyBonusSchedulerTest {
 
     @Test
     void giveDailyBonusToActiveUsers_withMultipleActiveUsers_shouldAddBonusToAll() {
-        // Arrange
         User user1 = createTestUser(UUID.randomUUID(), 100, UserRole.PLAYER, LocalDateTime.now().minusHours(6));
         User user2 = createTestUser(UUID.randomUUID(), 200, UserRole.PLAYER, LocalDateTime.now().minusHours(18));
         User user3 = createTestUser(UUID.randomUUID(), 300, UserRole.PLAYER, LocalDateTime.now().minusMinutes(30));
 
         when(userService.getAllUsers()).thenReturn(List.of(user1, user2, user3));
 
-        // Act
         dailyBonusScheduler.giveDailyBonusToActiveUsers();
 
-        // Assert
         verify(userService, times(3)).save(any(User.class));
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         verify(userService, times(3)).save(userCaptor.capture());
@@ -89,29 +80,23 @@ public class DailyBonusSchedulerTest {
 
     @Test
     void giveDailyBonusToActiveUsers_withInactiveUserNotUpdatedWithinPastDay_shouldNotAddBonus() {
-        // Arrange
         User inactiveUser = createTestUser(UUID.randomUUID(), 100, UserRole.PLAYER, LocalDateTime.now().minusDays(2));
         when(userService.getAllUsers()).thenReturn(List.of(inactiveUser));
 
-        // Act
         dailyBonusScheduler.giveDailyBonusToActiveUsers();
 
-        // Assert
         verify(userService, never()).save(any(User.class));
     }
 
     @Test
     void giveDailyBonusToActiveUsers_withMixedActiveAndInactiveUsers_shouldOnlyRewardActiveUsers() {
-        // Arrange
         User activeUser = createTestUser(UUID.randomUUID(), 100, UserRole.PLAYER, LocalDateTime.now().minusHours(12));
         User inactiveUser = createTestUser(UUID.randomUUID(), 200, UserRole.PLAYER, LocalDateTime.now().minusDays(3));
 
         when(userService.getAllUsers()).thenReturn(List.of(activeUser, inactiveUser));
 
-        // Act
         dailyBonusScheduler.giveDailyBonusToActiveUsers();
 
-        // Assert
         verify(userService, times(1)).save(any(User.class));
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         verify(userService).save(userCaptor.capture());
@@ -123,14 +108,11 @@ public class DailyBonusSchedulerTest {
 
     @Test
     void giveDailyBonusToActiveUsers_withUserScoreOver10000AndPlayerRole_shouldPromoteToQuizmaster() {
-        // Arrange
         User playerUser = createTestUser(UUID.randomUUID(), 9995, UserRole.PLAYER, LocalDateTime.now().minusHours(6));
         when(userService.getAllUsers()).thenReturn(List.of(playerUser));
 
-        // Act
         dailyBonusScheduler.giveDailyBonusToActiveUsers();
 
-        // Assert
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         verify(userService).save(userCaptor.capture());
 
@@ -141,14 +123,11 @@ public class DailyBonusSchedulerTest {
 
     @Test
     void giveDailyBonusToActiveUsers_withUserScoreOver10000AndAdminRole_shouldNotChangeRole() {
-        // Arrange
         User adminUser = createTestUser(UUID.randomUUID(), 9995, UserRole.ADMIN, LocalDateTime.now().minusHours(6));
         when(userService.getAllUsers()).thenReturn(List.of(adminUser));
 
-        // Act
         dailyBonusScheduler.giveDailyBonusToActiveUsers();
 
-        // Assert
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         verify(userService).save(userCaptor.capture());
 
@@ -159,14 +138,11 @@ public class DailyBonusSchedulerTest {
 
     @Test
     void giveDailyBonusToActiveUsers_withUserScoreOver10000AndQuizmasterRole_shouldNotChangeRole() {
-        // Arrange
         User quizmasterUser = createTestUser(UUID.randomUUID(), 9995, UserRole.QUIZMASTER, LocalDateTime.now().minusHours(6));
         when(userService.getAllUsers()).thenReturn(List.of(quizmasterUser));
 
-        // Act
         dailyBonusScheduler.giveDailyBonusToActiveUsers();
 
-        // Assert
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         verify(userService).save(userCaptor.capture());
 
@@ -177,15 +153,11 @@ public class DailyBonusSchedulerTest {
 
     @Test
     void giveDailyBonusToActiveUsers_withScoreBoundaryAt9990_shouldPromoteToQuizmaster() {
-        // Arrange - score is 9990, +10 bonus = 10000, should still promote at > 10000
-        // Actually, let's test with 9991 which becomes 10001 after bonus
         User playerUser = createTestUser(UUID.randomUUID(), 9991, UserRole.PLAYER, LocalDateTime.now().minusHours(6));
         when(userService.getAllUsers()).thenReturn(List.of(playerUser));
 
-        // Act
         dailyBonusScheduler.giveDailyBonusToActiveUsers();
 
-        // Assert
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         verify(userService).save(userCaptor.capture());
 
@@ -196,14 +168,11 @@ public class DailyBonusSchedulerTest {
 
     @Test
     void giveDailyBonusToActiveUsers_withLevelCalculation_shouldUpdateLevelCorrectly() {
-        // Arrange
         User userAtLevelBoundary = createTestUser(UUID.randomUUID(), 990, UserRole.PLAYER, LocalDateTime.now().minusHours(6));
         when(userService.getAllUsers()).thenReturn(List.of(userAtLevelBoundary));
 
-        // Act
         dailyBonusScheduler.giveDailyBonusToActiveUsers();
 
-        // Assert
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         verify(userService).save(userCaptor.capture());
 
@@ -214,13 +183,10 @@ public class DailyBonusSchedulerTest {
 
     @Test
     void giveDailyBonusToActiveUsers_withNoUsers_shouldNotInvokeAnySave() {
-        // Arrange
         when(userService.getAllUsers()).thenReturn(List.of());
 
-        // Act
         dailyBonusScheduler.giveDailyBonusToActiveUsers();
 
-        // Assert
         verify(userService, never()).save(any(User.class));
     }
 }

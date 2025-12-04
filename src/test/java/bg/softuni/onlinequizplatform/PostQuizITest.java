@@ -16,6 +16,7 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @AutoConfigureTestDatabase
 @Transactional
 public class PostQuizITest {
@@ -42,9 +44,6 @@ public class PostQuizITest {
     @Test
     void submitQuiz_updatesScore_savesQuizAndCallsLeaderboard() {
 
-        // ---------------------------
-        // 1. Arrange: Create and save quiz
-        // ---------------------------
         Quiz quiz = Quiz.builder()
                 .name("Java Basics")
                 .category(Category.GEOGRAPHY)
@@ -53,11 +52,8 @@ public class PostQuizITest {
                 .updatedOn(LocalDateTime.now())
                 .build();
 
-        quiz = quizRepository.save(quiz);  // persist quiz in H2
+        quiz = quizRepository.save(quiz);
 
-        // ---------------------------
-        // 2. Arrange: Create user
-        // ---------------------------
         User user = User.builder()
                 .username("tester")
                 .password("pass")
@@ -73,13 +69,9 @@ public class PostQuizITest {
 
         user.setId(UUID.randomUUID());
 
-        // ---------------------------
-        // 3. Arrange: Build quiz submission request
-        // ---------------------------
         QuestionOptionRequest opt1 = new QuestionOptionRequest(UUID.randomUUID(), "A", true, true);
         QuestionOptionRequest opt2 = new QuestionOptionRequest(UUID.randomUUID(),"B", false, false);
 
-//        QuestionRequest q1 = new QuestionRequest("What is Java?", List.of(opt1, opt2));
         QuestionRequest q1 = QuestionRequest.builder()
                 .name("Java Basics")
                 .options(List.of(opt1, opt2))
@@ -92,28 +84,16 @@ public class PostQuizITest {
         request.setScore(100);
         request.setQuestions(List.of(q1));
 
-        // ---------------------------
-        // 4. Mock leaderboard call
-        // ---------------------------
         when(leaderboardClient.upsertScore(any(CreateScoreRequest.class), eq(user.getId())))
                 .thenReturn(null);
 
-        // ---------------------------
-        // 5. Act
-        // ---------------------------
         quizService.submitQuiz(request, user);
 
-        // ---------------------------
-        // 6. Assert: DB state changed
-        // ---------------------------
         Quiz updated = quizRepository.findById(quiz.getId()).orElseThrow();
 
         assertEquals(100, updated.getEarnedScore(), "Earned score must be calculated correctly");
         assertEquals(user.getId(), updated.getUser().getId(), "User must be assigned to quiz");
 
-        // ---------------------------
-        // 7. Assert: LeaderboardClient called
-        // ---------------------------
         ArgumentCaptor<CreateScoreRequest> requestCaptor =
                 ArgumentCaptor.forClass(CreateScoreRequest.class);
 
