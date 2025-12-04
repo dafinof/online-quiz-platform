@@ -34,7 +34,7 @@ public class DataInitializer {
             User admin = new User();
             admin.setUsername("admin");
             admin.setPassword(passwordEncoder.encode("admin123"));
-            admin.setAvatarUrl("https://example.com/admin.png");
+            admin.setAvatarUrl("https://i.pinimg.com/736x/49/54/b0/4954b06d33b6522cb66589533463d6f5.jpg");
             admin.setRole(UserRole.ADMIN);
             admin.setEmail("admin@example.com");
             admin.setActive(true);
@@ -46,7 +46,7 @@ public class DataInitializer {
             User quizmaster = new User();
             quizmaster.setUsername("quizmaster");
             quizmaster.setPassword(passwordEncoder.encode("qm123"));
-            quizmaster.setAvatarUrl("https://example.com/qm.png");
+            quizmaster.setAvatarUrl("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSawUlsZW4ARr1S2FsurRAewCW99YL9JzC5mA&s");
             quizmaster.setRole(UserRole.QUIZMASTER);
             quizmaster.setEmail("qm@example.com");
             quizmaster.setActive(true);
@@ -58,7 +58,7 @@ public class DataInitializer {
             User player = new User();
             player.setUsername("player");
             player.setPassword(passwordEncoder.encode("player123"));
-            player.setAvatarUrl("https://example.com/player.png");
+            player.setAvatarUrl("https://www.shutterstock.com/image-vector/quiz-show-color-icon-players-260nw-1234456711.jpg");
             player.setRole(UserRole.PLAYER);
             player.setEmail("player@example.com");
             player.setActive(true);
@@ -130,7 +130,7 @@ public class DataInitializer {
         quiz.setCategory(category);
         quiz.setDescription(description);
         quiz.setImageUrl("https://media.istockphoto.com/id/1186386668/vector/quiz-in-comic-pop-art-style-quiz-brainy-game-word-vector-illustration-design.jpg?s=612x612&w=0&k=20&c=mBQMqQ6kZuC9ZyuV5_uCm80QspqSJ7vRm0MfwL3KLZY=");
-        quiz.setScore(0);
+        quiz.setScore(100);
         quiz.setEarnedScore(0);
         quiz.setUser(owner);
         quiz.setCreatedOn(now);
