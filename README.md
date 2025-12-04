@@ -1,7 +1,9 @@
 Online Quiz Platform
 
-An interactive web application that allows users to take quizzes, track results, and compete on a global leaderboard. Reach new levels and become a quiz master.
-Built with Spring Boot, Thymeleaf, and MySQL, it supports dynamic quiz creation, execution, scoring, and secure user management.
+An interactive web application that allows users to take quizzes, track results, and compete on a global leaderboard.
+Advance through levels, improve your score, and become a true quiz master.
+
+Built with Spring Boot, Thymeleaf, and MySQL, the platform supports dynamic quiz creation, secure authentication, and smooth quiz execution.
 
 🚀 Tech Stack
 Backend
@@ -18,13 +20,13 @@ Spring Security
 
 Spring Validation
 
-Hibernate (via Spring Data JPA)
+Hibernate
 
-OpenFeign (REST client for leaderboard integration)
+OpenFeign (Leaderboard REST integration)
 
 Frontend
 
-Thymeleaf templating engine
+Thymeleaf
 
 Thymeleaf Spring Security integration
 
@@ -32,7 +34,9 @@ HTML5 / CSS3 / JavaScript
 
 Database
 
-MySQL with MySQL Connector/J
+MySQL
+
+MySQL Connector/J
 
 Build & Tools
 
@@ -46,90 +50,96 @@ Spring Boot Starter Test
 
 Spring Security Test
 
+🔧 Automatic Data Initialization (Test Users & Sample Quizzes)
+
+To simplify first-time setup and grading, the application automatically creates default users and sample quizzes when the database starts empty.
+
+This initialization runs only if no users exist in the system.
+
+👤 Default Test Users
+Username	  Role	      Password
+admin	      ADMIN	      admin123
+quizmaster	QUIZMASTER	qm123
+player	    PLAYER	    player123
+
+ADMIN and QUIZMASTER can create, take, and manage quizzes
+
+PLAYER can take quizzes
+
+A PLAYER can be promoted to QUIZMASTER automatically after reaching a required score threshold
+
+📝 Sample Quizzes
+
+A few example quizzes are also generated to speed up testing.
+These quizzes can be taken immediately or used as templates for creating new ones.
+
 📌 Features
 ✔ Quiz Management
 
 Create, edit, and delete quizzes
 
-Add multiple questions per quiz
+Multiple questions per quiz
 
-Each question supports multiple answer options
+Answer options with correct/incorrect flags
 
-Support for marking correct answers
+Quiz metadata: categories, descriptions, images
 
-Categories, descriptions, images, and metadata
+DTO-based validation and safe mapping
 
-DTO-based validation (name length, number of options, etc.)
+Prevention of invalid quizzes (min. number of options, name constraints)
 
 ✔ Quiz Execution
 
-Interactive browser-based quiz UI (Thymeleaf)
+Interactive UI built with Thymeleaf
 
 Tracks:
 
-Correct answers (isCorrect)
+Correct answers
 
-User selections (isSelected)
+User selections
 
-Dynamic rendering of questions and options
+Automatic scoring
 
-Automatic scoring after submission
-
-Display final result to the user
+Final results page
 
 ✔ User Management
 
-Integrated Spring Security
+Spring Security authentication
 
-Role-based access for:
+Role-based access:
 
-Admins (quiz management, users management, taking quizzes)
+ADMIN: full access
 
-QuizMasters (quiz creation, taking quizzes)
+QUIZMASTER: quiz creation + taking quizzes
 
-Users (taking quizzes)
+PLAYER: taking quizzes only
 
 ✔ Leaderboard Integration
 
-External REST API communication using OpenFeign
+Via OpenFeign, the app communicates with an external REST API to:
 
-Submission of quiz results to external Leaderboard service
-
-Live ranking information retrieval
-
-✔ Validation & Safety
-
-Server-side validation (JSR-380 / Jakarta Validation)
-
-Detailed error feedback in UI
-
-DTO-to-entity mappers
-
-Prevention of invalid quizzes (minimum 2 options, name constraints, etc.)
-
-📡 Architecture Overview
-Controller → Service → Repository → Database
-                 ↑
-            DTO Mapper
-                 ↑
-            Thymeleaf UI
-                 ↑
-       External REST API (Leaderboard)
-
-🔌 External Integrations
-Leaderboard REST API
-
-Used to:
-
-Submit a user’s quiz score
+Submit user quiz scores
 
 Retrieve top leaderboard entries
 
-Display ranking to users
+✔ Validation & Safety
 
-Integrated using Spring Cloud OpenFeign.
+JSR-380 / Jakarta Validation on DTOs
 
-🗄️ Database Structure (Conceptual)
+Clear error messages in UI
+
+Strict server-side validation
+
+Entity → DTO mappers
+
+📡 Architecture Overview
+Controller → Service → Repository → Database
+       ↑          ↑          ↑
+     DTO       Mapper     Thymeleaf UI
+       ↑
+External REST API (Leaderboard)
+
+🗄️ Database Overview (Conceptual)
 Quiz
 
 id (UUID)
@@ -160,7 +170,7 @@ text
 
 isCorrect
 
-isSelected (query-only field used at quiz execution)
+isSelected (used only during quiz execution)
 
 ▶️ Running the Application
 Requirements
@@ -171,37 +181,32 @@ Maven 3+
 
 MySQL running locally
 
-1. Configure application.properties
+Configure application.properties
 spring.datasource.url=jdbc:mysql://localhost:3306/quizdb
 spring.datasource.username=root
 spring.datasource.password=*****
 spring.jpa.hibernate.ddl-auto=update
 
-2. Build the project
+Build the project
 mvn clean install
 
-3. Run the project
+Run the project
 mvn spring-boot:run
 
 
-App is available at:
+The application will become available at:
 
-http://localhost:8080
+👉 http://localhost:8080
 
 🧪 Testing
-
-Run full test suite:
-
-mvn test
-
 
 Supports:
 
 Unit tests
 
-Security tests
-
 Integration tests
+
+Security tests
 
 📁 Project Structure
 src/
@@ -217,4 +222,4 @@ src/
 
 🤝 Contributing
 
-Pull requests and improvements are welcome.
+Pull requests and improvements are welcome!
