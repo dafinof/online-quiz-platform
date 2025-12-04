@@ -206,7 +206,7 @@ Unit tests
 
 Integration tests
 
-Security tests
+Api tests
 
 📁 Project Structure
 src/
